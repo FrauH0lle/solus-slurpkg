@@ -1,0 +1,18 @@
+name       : font-oswald-ttf
+version    : 4.101
+release    : 3
+source     :
+    - https://github.com/google/fonts/raw/8d2bb82bece80d7475c3e5d63915f26e0e2f7c31/ofl/oswald/static/Oswald-Bold.ttf : 0cde70ba3b3398ab0bc19be74c7517442ef711846d33f286d7932fef9784e2d8
+    - https://github.com/google/fonts/raw/8d2bb82bece80d7475c3e5d63915f26e0e2f7c31/ofl/oswald/static/Oswald-ExtraLight.ttf : f7e415a9685e50df9b4821a4c676089ed3cfea4037232f2ad4a994932bc9a24a
+    - https://github.com/google/fonts/raw/8d2bb82bece80d7475c3e5d63915f26e0e2f7c31/ofl/oswald/static/Oswald-Light.ttf : 292165793dab020fbe32fc3741d912b7fdc23e13c19c45451ea591f7ddfc7732
+    - https://github.com/google/fonts/raw/8d2bb82bece80d7475c3e5d63915f26e0e2f7c31/ofl/oswald/static/Oswald-Medium.ttf : 8be76fb078487d3abe20d8d068d8ad8fc47bd25b504ac7b1e6642321feab149f
+    - https://github.com/google/fonts/raw/8d2bb82bece80d7475c3e5d63915f26e0e2f7c31/ofl/oswald/static/Oswald-Regular.ttf : 43b55a174fb3f5a1e6218a5385f647d2eace04776ab58673f4a439381930006e
+    - https://github.com/google/fonts/raw/8d2bb82bece80d7475c3e5d63915f26e0e2f7c31/ofl/oswald/static/Oswald-SemiBold.ttf : 4d6421e9e384ebca3db447336fc5e0e9f85e083ad4ca5e865c5f58a880808537
+license    : OFL-1.1
+summary    : Sans-serif typeface from Google by Vernon Adams
+description: |
+    Sans-serif typeface from Google by Vernon Adams
+extract    : no
+install    : |
+    install -dm755 "${installdir}/usr/share/fonts/TTF/"
+    install -Dpm644 $sources/*.ttf "${installdir}/usr/share/fonts/TTF/"

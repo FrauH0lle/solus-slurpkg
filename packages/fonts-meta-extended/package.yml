@@ -1,0 +1,40 @@
+name       : fonts-meta-extended
+version    : 1
+release    : 1
+source     :
+    - https://raw.githubusercontent.com/FrauH0lle/solus-slurpkg/master/dummy_source.txt : 411f5fe8b6f59365fc37bb18997b7e454ec4332bc49269a4e89b9289fc8c7d84
+license    : GPL-3.0-or-later
+summary    : Extended font collection meta package
+description: |
+    Extended font collection meta package, ported from Infinality.
+extract    : no
+rundeps    :
+    - font-symbola-ttf
+    - noto-sans-ttf
+    - noto-serif-ttf
+    - font-courier-prime-ttf
+    - dejavu-fonts-ttf
+    - font-heuristica-ttf
+    - liberation-fonts-ttf
+    - cantarell-fonts
+    - fonts-gsfonts
+    - font-tex-gyre-fonts
+    - font-caladea-ttf
+    - font-carlito-ttf
+    - font-droid-ttf
+    - font-gelasio-ib-ttf
+    - font-impallari-cantora-ttf
+    - font-merriweather-ttf
+    - font-merriweather-sans-ttf
+    - font-opensans-ttf
+    - font-oswald-ttf
+    - font-quintessential-ttf
+    - font-signika-ttf
+    - font-ubuntu-ttf
+setup      : |
+    mkdir $workdir/infinality
+    cp $pkgfiles/30-infinality-aliases.conf $workdir/infinality
+    cd $workdir/infinality
+    %patch -p1 < $pkgfiles/pdf-aliases.patch
+install    : |
+    install -Dm644 -t "$installdir/etc/fonts/conf.avail" "$workdir/30-infinality-aliases.conf"

@@ -1,0 +1,16 @@
+name       : font-signika-ttf
+version    : 1.002
+release    : 3
+source     :
+    - https://github.com/google/fonts/raw/8d2bb82bece80d7475c3e5d63915f26e0e2f7c31/ofl/signika/static/Signika-Bold.ttf : 99a37232f4d715e8defab74b52c38b6da7b7964d509a8a8304a59223039e6e6e
+    - https://github.com/google/fonts/raw/8d2bb82bece80d7475c3e5d63915f26e0e2f7c31/ofl/signika/static/Signika-Light.ttf : 43242f1c69f328aabd2f3af669505d2c73dc130873348fd19afb30f79bb4496e
+    - https://github.com/google/fonts/raw/8d2bb82bece80d7475c3e5d63915f26e0e2f7c31/ofl/signika/static/Signika-Regular.ttf : f5282363e9e29ce7fc63d362c032c65e9251e111227043cd8159779c8b02bf32
+    - https://github.com/google/fonts/raw/8d2bb82bece80d7475c3e5d63915f26e0e2f7c31/ofl/signika/static/Signika-SemiBold.ttf : 95fb307669768bbc8d9d89db76fd08a7a288a14f40934f214331cc2b8ea708c0
+license    : OFL-1.1
+summary    : Sans-serif typeface from Google by Anna Giedryś
+description: |
+    Sans-serif typeface from Google by Anna Giedryś
+extract    : no
+install    : |
+    install -dm755 "${installdir}/usr/share/fonts/TTF/"
+    install -Dpm644 $sources/*.ttf "${installdir}/usr/share/fonts/TTF/"

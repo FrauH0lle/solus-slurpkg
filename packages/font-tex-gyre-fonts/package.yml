@@ -1,0 +1,11 @@
+name       : font-tex-gyre-fonts
+version    : 2.501
+release    : 2
+source     :
+    - http://www.gust.org.pl/projects/e-foundry/tex-gyre/whole/tg2_501otf.zip : d7f8be5317bec4e644cf16c5abf876abeeb83c43dbec0ccb4eee4516b73b1bbe
+license    : CUSTOM
+summary    : Substitute PostScript fonts in OpenType format
+description: |
+    Substitute PostScript fonts in OpenType format
+install    : |
+    install -Dt "$installdir/usr/share/fonts/tex-gyre" -m644 $workdir/*.otf

@@ -16,6 +16,24 @@
       "dependencies": [
         "aspell"
       ]
+    },
+    {
+      "name": "fonts-meta-extended",
+      "dependencies": [
+        "font-courier-prime-ttf",
+        "font-heuristica-ttf",
+        "fonts-gsfonts",
+        "font-tex-gyre-fonts",
+        "font-caladea-ttf",
+        "font-carlito-ttf",
+        "font-impallari-cantora-ttf",
+        "font-merriweather-ttf",
+        "font-merriweather-sans-ttf",
+        "font-opensans-ttf",
+        "font-oswald-ttf",
+        "font-quintessential-ttf",
+        "font-signika-ttf"
+      ]
     }
   ]
 }

@@ -1,0 +1,16 @@
+name       : font-carlito-ttf
+version    : 20130920
+release    : 2
+source     :
+    - https://commondatastorage.googleapis.com/chromeos-localmirror/distfiles/crosextrafonts-carlito-20130920.tar.gz : 4bd12b6cbc321c1cf16da76e2c585c925ce956a08067ae6f6c64eff6ccfdaf5a
+license    : OFL-1.1
+summary    : Google's Carlito font
+description: |
+    Google's Carlito font
+install    : |
+    install -Dt "$installdir/usr/share/fonts/carlito" -m644 *.ttf
+
+    install -Dt "$installdir/etc/fonts/conf.avail" -m644 $pkgfiles/*.conf
+
+    mkdir -p "$installdir/etc/fonts/conf.d"
+    ln -srt "$installdir/etc/fonts/conf.d" "$installdir"/etc/fonts/conf.avail/62-google-crosextra-carlito.conf

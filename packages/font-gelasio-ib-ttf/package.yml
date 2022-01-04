@@ -1,0 +1,12 @@
+name       : font-gelasio-ib-ttf
+version    : 0.2
+release    : 2
+source     :
+    - git|https://github.com/SorkinType/Gelasio.git : c709e349ff6ce37a3381f4eaecef0b5d91d72eae
+license    : GPL-2.0-or-later # CHECK ME
+summary    : Gelasio is designed to be metrics compatible with Georgia
+description: |
+    Gelasio is designed to be metrics compatible with Georgia in its Regular, Bold, Italic and Bold Italic weights. Interpolated Medium, medium Italic, SemiBold and SemiBold Italic have now been added as well.
+install    : |
+  install -dm 755 "${installdir}/usr/share/fonts/TTF"
+  install -m644 -Dt $installdir/usr/share/fonts/TTF/ fonts/ttf/*.ttf
