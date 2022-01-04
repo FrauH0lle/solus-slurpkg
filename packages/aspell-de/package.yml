@@ -1,9 +1,9 @@
 name       : aspell-de
 version    : 20161207
-release    : 1
+release    : 2
 source     :
     - https://ftp.gnu.org/gnu/aspell/dict/de/aspell6-de-20161207-7-0.tar.bz2 : c2125d1fafb1d4effbe6c88d4e9127db59da9ed92639c7cbaeae1b7337655571
-license    : GPL-2.0-or-later # CHECK ME
+license    : GPL-2.0-or-later
 summary    : German dictionary for aspell
 description: |
     German dictionary for aspell

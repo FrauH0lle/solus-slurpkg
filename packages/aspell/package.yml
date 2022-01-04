@@ -1,9 +1,9 @@
 name       : aspell
 version    : 0.60.8
-release    : 2
+release    : 3
 source     :
     - https://github.com/GNUAspell/aspell/archive/rel-0.60.8.tar.gz : 242f8ffac41db7b7dbb08e1b3e6ea3abb9e8b71ffebe2931c009baee692ff8e3
-license    : LGPL
+license    : LGPL-2.1-or-later
 summary    : A spell checker designed to eventually replace Ispell
 description: |
     A spell checker designed to eventually replace Ispell

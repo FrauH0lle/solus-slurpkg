@@ -1,9 +1,9 @@
 name       : arc-kde-theme
 version    : 2019_rc1
-release    : 1
+release    : 2
 source     :
-    - git|https://github.com/PapirusDevelopmentTeam/arc-kde.git : 04873ca3f4b46fda46c39dc4778af0762be947e6
-license    : GPL-3.0-or-later
+    - git|https://github.com/PapirusDevelopmentTeam/arc-kde.git : e832daee0d97e27042cccd06b689bf6f73e5a7e9
+license    : GPL-3.0-only
 component  : desktop.theme
 summary    : Arc KDE customization
 rundeps    :
