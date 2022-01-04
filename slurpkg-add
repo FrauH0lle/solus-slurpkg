@@ -93,16 +93,16 @@ slurpkg_add() {
         echo "Could not find all packages, aborting."
         exit 1
     fi
-
     # Then link the requested packages.
     for pkg in "${packages[@]}"; do
         # Check if local dependencies are defined
         # 'slurpkg.json' in '$local_dir' should take precedence
+        unset deps
         if [[ -f "$local_dir/slurpkg.json" ]]; then
-            declare -a deps="($(jq -r '.packages[] | select(.name | contains("'$pkg'")) | select(.dependencies != null) | .dependencies[] | @sh' "$local_dir/slurpkg.json"))"
+            declare -a deps="($(jq -r '.packages[] | select(.name == "'$pkg'") | select(.dependencies != null) | .dependencies[] | @sh' "$local_dir/slurpkg.json"))"
         fi
         if [[ -z "$deps" ]]; then
-            declare -a deps="($(jq -r '.packages[] | select(.name | contains("'$pkg'")) | select(.dependencies != null) | .dependencies[] | @sh' "$slurpkg_db"))"
+            declare -a deps="($(jq -r '.packages[] | select(.name == "'$pkg'") | select(.dependencies != null) | .dependencies[] | @sh' "$slurpkg_db"))"
         fi
         if [[ ! -z "$deps" ]]; then
             # Run in subshell to avoid confusion with variables

@@ -116,7 +116,8 @@ slurpkg_build() {
                 echo-ok "Package $(tput bold)${packages_names[$i]}$(tput sgr0) already in and up to date."
             else
                 # Check if local dependencies are defined and build them first
-                declare -a deps="($(jq -r '.packages[] | select(.name | contains("'${packages_names[$i]}'")) | select(.dependencies != null) | .dependencies[] | @sh' "$slurpkg_db"))"
+                unset deps
+                declare -a deps="($(jq -r '.packages[] | select(.name == "'${packages_names[$i]}'") | select(.dependencies != null) | .dependencies[] | @sh' "$slurpkg_db"))"
                 if [[ ! -z "$deps" ]]; then
                     # Append full path to dependencies
                     for j in "${!deps[@]}"; do

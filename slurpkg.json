@@ -4,6 +4,18 @@
       "name": "xpadneo",
       "kernel_module": "true",
       "kernel_module_file": "hid-xpadneo.ko"
+    },
+    {
+      "name": "aspell-de",
+      "dependencies": [
+        "aspell"
+      ]
+    },
+    {
+      "name": "aspell-en",
+      "dependencies": [
+        "aspell"
+      ]
     }
   ]
 }
