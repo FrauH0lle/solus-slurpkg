@@ -111,9 +111,7 @@ slurpkg_kmodules() {
                 readarray -d '' installed_pkgs < <(eopkg list-installed | awk '{$1=$1;print}' | awk '{print $1}' | grep "$module" | tr '\n' '\0')
                 # Check if there are any dependencies and remove them from the packages
                 # which should be explicitly re-installed
-                # Unfortunately, using --automatic results in colored output, which needs to
-                # be stripped
-                readarray -d '' installed_dep_pkgs < <(eopkg list-installed --automatic | awk '{$1=$1;print}' | awk '{print $1}' | grep "$module" | sed -r 's/\x1b\[[0-9;]*m//g' | tr '\n' '\0')
+                readarray -d '' installed_dep_pkgs < <(eopkg list-installed --automatic --no-color | awk '{$1=$1;print}' | awk '{print $1}' | grep "$module" | tr '\n' '\0')
 
                 for target in "${installed_dep_pkgs[@]}"; do
                     for i in "${!installed_pkgs[@]}"; do
