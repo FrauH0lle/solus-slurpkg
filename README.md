@@ -131,13 +131,13 @@ This is a simple `JSON` database which serves the following purposes:
 
 - Define which package is also a kernel module. For example:
 
-``` json
-{
-  "name": "xpadneo",
-  "kernel_module": "true",
-  "kernel_module_file": "hid-xpadneo.ko"
-}
-```
+  ``` json
+  {
+    "name": "xpadneo",
+    "kernel_module": "true",
+    "kernel_module_file": "hid-xpadneo.ko"
+  }
+  ```
 
 This means, that `xpadneo` is a kernel module and `hid-xpadneo.ko` is the kernel
 module file. The file will be used to determine if a kernel module is present
