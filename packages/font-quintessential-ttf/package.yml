@@ -1,13 +1,14 @@
 name       : font-quintessential-ttf
 version    : 1.001
-release    : 3
+release    : 4
 source     :
     - https://github.com/google/fonts/raw/8d2bb82bece80d7475c3e5d63915f26e0e2f7c31/ofl/quintessential/Quintessential-Regular.ttf : 73d192f10dbfc716214aae282afb93036f12415d16adc9d6d0e981f34d829d32
 license    : OFL-1.1
-summary    : Calligraphic typeface from Google by Brian J. Bonislawsky
+summary    : Calligraphic typeface from Google
 description: |
-    Calligraphic typeface from Google by Brian J. Bonislawsky
+    Calligraphic typeface from Google by Brian J. Bonislawsky.
 extract    : no
 install    : |
-    install -dm755 "${installdir}/usr/share/fonts/TTF/"
-    install -Dpm644 $sources/*.ttf "${installdir}/usr/share/fonts/TTF/"
+    # Install fonts
+    install -dm755 "$installdir"/usr/share/fonts/truetype/quintessential
+    install -Dpm644 $sources/*.ttf "$installdir"/usr/share/fonts/truetype/quintessential

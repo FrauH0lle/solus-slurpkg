@@ -1,6 +1,6 @@
 name       : font-opensans-ttf
 version    : 1.101
-release    : 3
+release    : 4
 source     :
     - https://cdn.rawgit.com/google/fonts/8d2bb82bece80d7475c3e5d63915f26e0e2f7c31/apache/opensans/OpenSans-Bold.ttf : 1b43de2449d39b65ff6f63315d4afda585f72fbbec2e3d9a56f59de6c75149d3
     - https://cdn.rawgit.com/google/fonts/8d2bb82bece80d7475c3e5d63915f26e0e2f7c31/apache/opensans/OpenSans-BoldItalic.ttf : 3575d2afaaad69970380237a5d6357b6db241f53b77607482eaf9f299b8c07ec
@@ -18,8 +18,9 @@ source     :
 license    : Apache-2.0
 summary    : Sans-serif typeface commissioned by Google
 description: |
-    Sans-serif typeface commissioned by Google
+    Sans-serif typeface commissioned by Google.
 extract    : no
 install    : |
-    install -dm755 "${installdir}/usr/share/fonts/TTF/"
-    install -Dpm644 $sources/*.ttf "${installdir}/usr/share/fonts/TTF/"
+    # Install fonts
+    install -dm755 "$installdir"/usr/share/fonts/truetype/opensans
+    install -Dpm644 $sources/*.ttf "$installdir"/usr/share/fonts/truetype/opensans

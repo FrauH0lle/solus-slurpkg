@@ -1,6 +1,6 @@
 name       : font-terminus
 version    : 4.49.1
-release    : 3
+release    : 5
 source     :
     - https://downloads.sourceforge.net/project/terminus-font/terminus-font-4.49/terminus-font-4.49.1.tar.gz : d961c1b781627bf417f9b340693d64fc219e0113ad3a3af1a3424c7aa373ef79
 license    : OFL-1.1
@@ -15,10 +15,10 @@ setup      : |
 build      : |
     %make
 install    : |
+    # Install fonts
     %make_install
 
-    install -Dm644 75-yes-terminus.conf "$installdir/etc/fonts/conf.avail/75-yes-terminus.conf"
-    install -d "$installdir/etc/fonts/conf.d"
-
-    cd "$installdir/etc/fonts/conf.d"
-    ln -s /etc/fonts/conf.avail/75-yes-terminus.conf .
+    # Install fontconfig
+    install -Dm644 75-yes-terminus.conf "$installdir"/usr/share/fontconfig/conf.avail/75-yes-terminus.conf
+    install -dm00755 "$installdir"/usr/share/fonts/conf.d
+    ln -sv /usr/share/fontconfig/conf.avail/75-yes-terminus.conf "$installdir"/usr/share/fonts/conf.d

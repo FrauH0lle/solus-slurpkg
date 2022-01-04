@@ -1,6 +1,6 @@
 name       : font-courier-prime-ttf
 version    : 1.203
-release    : 2
+release    : 3
 source     : 
     - https://quoteunquoteapps.com/courierprime/downloads/courier-prime.zip : d5d4faf1bee0d1f52bab1103cbfdfb354976331c86f999c110c22a098cb12d73
     - https://quoteunquoteapps.com/courierprime/downloads/courier-prime-sans.zip : 754b3937340f5522ccf96be7832efbd809ef93f373d51b12919adbd9c0a468d7
@@ -17,9 +17,9 @@ setup      : |
 
 install    : |
     # Install fonts
-    install -d "$installdir/usr/share/fonts/TTF"
+    install -d "$installdir"/usr/share/fonts/truetype/courier-prime
     # Courier Prime fonts expand to directory `Courier Prime`
     # Courier Prime Sans fonts expand to directory `CourierPrimeSans-master/ttf`
     # Courier Prime Code fonts expand to directory `ttf`
     # Courier Prime Medium & Semi-Bold fonts expand to base directory
-    install -m644 {Courier\ Prime/,CourierPrimeSans-master/ttf/,ttf/,}*.ttf "$installdir/usr/share/fonts/TTF"
+    install -m644 {Courier\ Prime/,CourierPrimeSans-master/ttf/,ttf/,}*.ttf "$installdir"/usr/share/fonts/truetype/courier-prime

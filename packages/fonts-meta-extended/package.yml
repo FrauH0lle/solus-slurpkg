@@ -1,6 +1,6 @@
 name       : fonts-meta-extended
 version    : 1
-release    : 1
+release    : 2
 source     :
     - https://raw.githubusercontent.com/FrauH0lle/solus-slurpkg/master/dummy_source.txt : 411f5fe8b6f59365fc37bb18997b7e454ec4332bc49269a4e89b9289fc8c7d84
 license    : GPL-3.0-or-later
@@ -37,4 +37,4 @@ setup      : |
     cd $workdir/infinality
     %patch -p1 < $pkgfiles/pdf-aliases.patch
 install    : |
-    install -Dm644 -t "$installdir/etc/fonts/conf.avail" "$workdir/30-infinality-aliases.conf"
+    install -Dm644 -t "$installdir"/usr/share/fontconfig/conf.avail "$workdir/30-infinality-aliases.conf"
