@@ -1,0 +1,63 @@
+name       : xpadneo
+version    : 0.9.1
+release    : 12
+source     :
+    - https://github.com/atar-axis/xpadneo/archive/refs/tags/v0.9.1.tar.gz : 1f3617b0689d93877a706a52037649d6cad011cf70491b5b43da015a02312058
+license    : GPL-2.0-or-later # CHECK ME
+summary    : Advanced Linux Driver for Xbox One Wireless Controller (shipped with Xbox One S)
+description: |
+    Advanced Linux Driver for Xbox One Wireless Controller (shipped with Xbox One S)
+builddeps  :
+    - linux-lts
+    - linux-lts-headers
+    - linux-current
+    - linux-current-headers
+rundeps    :
+    - linux-lts
+    - xpadneo-common
+    - current :
+        - linux-current
+        - xpadneo-common
+permanent  :
+    - /lib/modules
+patterns   :
+    - common :
+        - /etc/modules-load.d
+        - /etc/udev/rules.d
+        - /etc/modprobe.d
+    - current : /lib/modules/*.current
+setup      : |
+    pushd ../..
+    cp -a build lts-build
+    cp -a build current-build
+build      : |
+    pushd ../../lts-build/xpadneo-"%version%"/hid-xpadneo/src
+    KERNEL_VERSION="%kernel_version_lts%"
+    %make -C /lib/modules/${KERNEL_VERSION}/build M=`pwd`
+
+    popd
+
+    pushd ../../current-build/xpadneo-"%version%"/hid-xpadneo/src
+    KERNEL_VERSION="%kernel_version_current%"
+    %make -C /lib/modules/${KERNEL_VERSION}/build M=`pwd`
+install    : |
+    mkdir -p $installdir/etc/modprobe.d
+    echo "options bluetooth disable_ertm=y" > $installdir/etc/modprobe.d/99-xpadneo-bluetooth.conf
+    mkdir -p $installdir/etc/udev/rules.d
+    cp hid-xpadneo/etc-udev-rules.d/*-xpadneo.rules $installdir/etc/udev/rules.d/
+    mkdir -p $installdir/etc/modules-load.d
+    echo "hid-xpadneo" > $installdir/etc/modules-load.d/xpadneo.conf
+    mkdir -p $installdir/etc/modprobe.d
+    cp hid-xpadneo/etc-modprobe.d/xpadneo.conf $installdir/etc/modprobe.d/
+
+    pushd ../../lts-build/xpadneo-"%version%"/hid-xpadneo/src
+    KERNEL_VERSION="%kernel_version_lts%"
+    install -d -m 00755 $installdir/lib/modules/${KERNEL_VERSION}/extra
+    install -m 00644 *.ko $installdir/lib/modules/${KERNEL_VERSION}/extra
+
+    popd
+
+    pushd ../../current-build/xpadneo-"%version%"/hid-xpadneo/src
+    KERNEL_VERSION="%kernel_version_current%"
+    install -d -m 00755 $installdir/lib/modules/${KERNEL_VERSION}/extra
+    install -m 00644 *.ko $installdir/lib/modules/${KERNEL_VERSION}/extra

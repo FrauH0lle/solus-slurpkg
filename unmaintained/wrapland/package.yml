@@ -1,0 +1,29 @@
+name       : wrapland
+version    : 0.520.0
+release    : 2
+source     :
+    - https://gitlab.com/kwinft/wrapland/-/archive/wrapland@0.520.0/wrapland-wrapland@0.520.0.tar.gz : a5e3819f0b346bb74e2203a54e5eda3f370b9f3b58dd15ab55514898e3dd9214
+license    : LGPL
+summary    : Qt/C++ library wrapping libwayland
+description: |
+    Qt/C++ library wrapping libwayland
+builddeps  :
+    - pkgconfig(egl)
+    - pkgconfig(Qt5UiTools)
+    - pkgconfig(wayland-eglstream)
+    - pkgconfig(wayland-protocols)
+    - pkgconfig(wayland-server)
+    - pkgconfig(x11)
+    - extra-cmake-modules
+setup      : |
+    %cmake \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DKDE_INSTALL_LIBDIR="%libdir%" \
+    -DKDE_INSTALL_LIBEXECDIR="%libdir%/%PKGNAME%" \
+    -DKDE_INSTALL_USE_QT_SYS_PATHS=ON \
+    -DBUILD_TESTING=OFF \
+    -DBUILD_QCH=ON
+build      : |
+    %make
+install    : |
+    %make_install

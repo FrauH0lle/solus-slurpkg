@@ -1,0 +1,9 @@
+[puddletag]
+source = "github"
+github = "puddletag/puddletag"
+use_latest_release = true
+
+[clementine]
+source = "github"
+github = "clementine-player/Clementine"
+use_latest_tag = true

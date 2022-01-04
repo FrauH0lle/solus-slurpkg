@@ -1,0 +1,23 @@
+name       : libxmlb
+version    : 0.2.1
+release    : 2
+source     :
+    - https://github.com/hughsie/libxmlb/archive/0.2.1.tar.gz : 2bf0cae179f1a9b6a63d294c06d324ea97266fc34656589b2865535ab2322529
+license    : GPL-2.0-or-later # CHECK ME
+summary    : Library to help create and query binary XML blobs
+description: |
+    Library to help create and query binary XML blobs
+builddeps  :
+    - pkgconfig(gobject-introspection-1.0)
+    - pkgconfig(gtk-doc)
+    - libstemmer-devel
+optimize   :
+    - no-symbolic
+setup      : |
+    %meson_configure -D stemmer=true
+build      : |
+    %ninja_build
+check      : |
+    %ninja_check 
+install    : |
+    %ninja_install

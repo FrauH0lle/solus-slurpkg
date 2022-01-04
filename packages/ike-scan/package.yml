@@ -1,0 +1,15 @@
+name       : ike-scan
+version    : 1.9
+release    : 1
+source     :
+    - git|https://github.com/royhills/ike-scan.git : b85ea4cf0f0b850ca2eba4397ae985e0ab0a874b
+license    : GPL-2.0-or-later # CHECK ME
+summary    : Discover and fingerprint IKE hosts (IPsec VPN Servers)
+description: |
+    Discover and fingerprint IKE hosts (IPsec VPN Servers)
+setup      : |
+    %reconfigure
+build      : |
+    %make
+install    : |
+    %make_install

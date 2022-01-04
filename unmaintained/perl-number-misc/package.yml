@@ -1,0 +1,21 @@
+name       : perl-number-misc
+version    : 1.2
+release    : 1
+source     :
+    - https://cpan.metacpan.org/authors/id/M/MI/MIKO/Number-Misc-1.2.tar.gz : 77b9b68c600a069cf16f4d8126ecb32151e6bcd34b0edb17b78adee689dc91d8
+license    : Artistic-1.0-Perl
+component  : programming.perl
+summary    : handy utilities for numbers
+description: |
+    handy utilities for numbers
+builddeps  :
+    - perl
+    - perl-module-build
+setup      : |
+    %perl_setup
+build      : |
+    %perl_build
+install    : |
+    %perl_install
+check      : |
+    %perl_build test

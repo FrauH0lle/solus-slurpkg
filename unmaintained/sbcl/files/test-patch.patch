@@ -1,0 +1,45 @@
+From b6a00a49fc8fefa555111ec1e92c44491828e661 Mon Sep 17 00:00:00 2001
+From: DonHugo69 <10484857+DonHugo69@users.noreply.github.com>
+Date: Mon, 21 Oct 2019 21:43:25 +0200
+Subject: [PATCH] Adjust ed path
+
+---
+ tests/run-program.impure.lisp | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/tests/run-program.impure.lisp b/tests/run-program.impure.lisp
+index 0617b1c1d..ab8c16939 100644
+--- a/tests/run-program.impure.lisp
++++ b/tests/run-program.impure.lisp
+@@ -167,19 +167,19 @@
+ 
+ #-win32
+ (with-test (:name :is-/bin/ed-installed?)
+-  (assert (probe-file "/bin/ed")))
++  (assert (probe-file "/usr/bin/ed")))
+ 
+ #-win32
+ (progn
+   (defparameter *tmpfile* (scratch-file-name))
+ 
+-  (with-test (:name (run-program :/bin/ed))
++  (with-test (:name (run-program :/usr/bin/ed))
+     (with-open-file (f *tmpfile*
+                        :direction :output
+                        :if-exists :supersede)
+       (write-line "bar" f))
+     (unwind-protect
+-         (let* ((ed (run-program "/bin/ed" (list *tmpfile*) :wait nil :pty t))
++         (let* ((ed (run-program "/usr/bin/ed" (list *tmpfile*) :wait nil :pty t))
+                 (ed-in (process-pty ed))
+                 (ed-out (process-pty ed)))
+            (labels ((read-linish (stream)
+@@ -274,7 +274,7 @@
+     (flet ((status-hook (proc)
+              (case (process-status proc)
+                (:stopped (setf stopped t)))))
+-      (let ((proc (run-program "/bin/ed" nil :search nil :wait nil
++      (let ((proc (run-program "/usr/bin/ed" nil :search nil :wait nil
+                                :input t :output t
+                                :status-hook #'status-hook)))
+         ;; Give the program a generous time to generate the SIGTTIN. 

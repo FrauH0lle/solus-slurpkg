@@ -1,0 +1,23 @@
+name       : tpm2-tss
+version    : 3.0.1
+release    : 2
+source     :
+    - https://github.com/tpm2-software/tpm2-tss/releases/download/3.0.1/tpm2-tss-3.0.1.tar.gz : 2432533a1cac0f0d15d0337d2f0a23591a50b36aad68ab72412ce694818b7e76
+license    : GPL-2.0-or-later # CHECK ME
+summary    : Implementation of the TCG Trusted Platform Module 2.0 Software Stack (TSS2)
+description: |
+    Implementation of the TCG Trusted Platform Module 2.0 Software Stack (TSS2)
+builddeps  :
+    - pkgconfig(libcrypto)
+    - pkgconfig(json-c)
+    - pkgconfig(libcurl)
+    - pkgconfig(cmocka)
+    - doxygen
+setup      : |
+    %configure --sysconfdir=/etc --localstatedir=/var \
+    --with-runstatedir=/run --with-sysusersdir=/usr/lib/sysusers.d \
+    --with-tmpfilesdir=/usr/lib/tmpfiles.d --with-udevrulesprefix=60- 
+build      : |
+    %make
+install    : |
+    %make_install

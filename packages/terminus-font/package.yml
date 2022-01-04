@@ -1,0 +1,24 @@
+name       : terminus-font
+version    : 4.49.1
+release    : 2
+source     :
+    - https://downloads.sourceforge.net/project/terminus-font/terminus-font-4.49/terminus-font-4.49.1.tar.gz : d961c1b781627bf417f9b340693d64fc219e0113ad3a3af1a3424c7aa373ef79
+license    : GPL-2.0-or-later # CHECK ME
+summary    : Monospace bitmap font (for X11 and console)
+description: |
+    Monospace bitmap font (for X11 and console)
+builddeps  :
+    - bdftopcf
+setup      : |
+    %patch -p1 < $pkgfiles/fix-75-yes-terminus.patch
+    %configure
+build      : |
+    %make
+install    : |
+    %make_install
+
+    install -Dm644 75-yes-terminus.conf "$installdir/etc/fonts/conf.avail/75-yes-terminus.conf"
+    install -d "$installdir/etc/fonts/conf.d"
+
+    cd "$installdir/etc/fonts/conf.d"
+    ln -s /etc/fonts/conf.avail/75-yes-terminus.conf .

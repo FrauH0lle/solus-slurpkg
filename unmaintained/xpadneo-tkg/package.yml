@@ -1,0 +1,30 @@
+name       : xpadneo-tkg
+version    : 0.9.1
+release    : 2
+source     :
+    - https://github.com/atar-axis/xpadneo/archive/refs/tags/v0.9.1.tar.gz : 1f3617b0689d93877a706a52037649d6cad011cf70491b5b43da015a02312058
+license    : GPL-2.0-or-later # CHECK ME
+summary    : Advanced Linux Driver for Xbox One Wireless Controller (shipped with
+    Xbox One S) - tkg version
+description: |
+    Advanced Linux Driver for Xbox One Wireless Controller (shipped with Xbox One S) - tkg version
+builddeps  :
+    - linux-tkg
+    - linux-tkg-headers
+rundeps    :
+    - linux-tkg
+    - xpadneo-common
+permanent  :
+    - /lib/modules
+setup      : |
+    pushd ../..
+    cp -a build tkg-build
+build      : |
+    pushd ../../tkg-build/xpadneo-"%version%"/hid-xpadneo/src
+    KERNEL_VERSION="$(echo "$(basename `readlink /usr/lib/kernel/default-tkg` | cut -d '.' -f 4,5,6)".tkg)"
+    %make -C /lib/modules/${KERNEL_VERSION}/build M=`pwd`
+install    : |
+    pushd ../../tkg-build/xpadneo-"%version%"/hid-xpadneo/src
+    KERNEL_VERSION="$(echo "$(basename `readlink /usr/lib/kernel/default-tkg` | cut -d '.' -f 4,5,6)".tkg)"
+    install -d -m 00755 $installdir/lib/modules/${KERNEL_VERSION}/extra
+    install -m 00644 *.ko $installdir/lib/modules/${KERNEL_VERSION}/extra

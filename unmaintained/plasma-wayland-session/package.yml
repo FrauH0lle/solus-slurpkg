@@ -1,0 +1,15 @@
+name       : plasma-wayland-session
+version    : 5.20.1.1
+release    : 1
+source     :
+    - https://gitlab.com/DonHugo/solus-packages/-/raw/master/dummySource.txt : 411f5fe8b6f59365fc37bb18997b7e454ec4332bc49269a4e89b9289fc8c7d84
+license    : GPL-2.0-or-later # CHECK ME
+summary    : Plasma Wayland session
+description: |
+    Plasma Wayland session
+extract  : no
+rundeps  :
+    - kwayland-integration
+    - plasma-workspace
+install    : |
+    install -Dm644 $pkgfiles/plasmawayland.desktop "$installdir"/usr/share/wayland-sessions/plasmawayland.desktop

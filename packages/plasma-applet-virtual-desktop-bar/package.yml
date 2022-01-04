@@ -1,0 +1,24 @@
+name       : plasma-applet-virtual-desktop-bar
+version    : 1.4
+release    : 5
+source     :
+    - git|https://github.com/wsdfhjxc/virtual-desktop-bar.git : b757a81476eb989a9cb35e7d0d5d09e9345d7484
+license    : GPL-2.0-or-later # CHECK ME
+summary    : KDE Plasma panel applet for managing virtual desktops
+description: |
+    KDE Plasma panel applet for managing virtual desktops
+builddeps  :
+    - pkgconfig(Qt5Qml)
+    - pkgconfig(Qt5Core)
+    - pkgconfig(Qt5X11Extras)
+    - pkgconfig(xcb)
+    - extra-cmake-modules
+    - plasma-framework-devel
+    - kglobalaccel-devel
+    - kxmlgui-devel
+setup      : |
+    %cmake -DKDE_INSTALL_QMLDIR=/usr/lib/qt5/qml
+build      : |
+    %make
+install    : |
+    %make_install

@@ -1,0 +1,19 @@
+name       : puddletag
+version    : 2.0.1
+release    : 1
+source     :
+    - https://github.com/puddletag/puddletag/releases/download/2.0.1/puddletag-2.0.1.tar.gz : f5c39b7168df34fb4e919d3f57660888f7a2218c6924979895e2b91ff9ba6a07
+license    : GPL-2.0-or-later # CHECK ME
+summary    : An audio tag editor for GNU/Linux
+description: |
+    An audio tag editor for GNU/Linux
+rundeps :
+    - python-pillow
+    - mutagen
+    - pyparsing
+    - python3-qt5
+    - chromaprint
+build      : |
+    %python3_setup
+install    : |
+    %python3_install

@@ -1,0 +1,18 @@
+name       : libreoffice-extension-languagetool
+version    : 5.0.1
+release    : 1
+source     :
+    - https://www.languagetool.org/download/LanguageTool-5.0.1.oxt : 9485e964a0686a19a2b9457576531c459a15373c2db9c9078e08289d1a9d47d2
+license    : GPL-2.0-or-later # CHECK ME
+summary    : An Open Source style and grammar checker (more than 30 languages)
+description: |
+    An Open Source style and grammar checker (more than 30 languages)
+extract    : no
+rundeps    :
+    - libreoffice-common
+install    : |
+    _pkgname=languagetool
+    _DESTDIR="${installdir}/usr/lib/libreoffice/share/extensions/${_pkgname}/"
+    install -dm755 "${_DESTDIR}"
+    bsdtar -xf $sources/LanguageTool-%version%.oxt -C "${_DESTDIR}"
+    chmod -R a=r,a+X,u+w "${_DESTDIR}"

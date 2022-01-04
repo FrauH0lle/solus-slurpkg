@@ -1,0 +1,13 @@
+name       : ttf-impallari-cantora
+version    : 1.001
+release    : 2
+source     :
+    - https://github.com/google/fonts/raw/8d2bb82bece80d7475c3e5d63915f26e0e2f7c31/ofl/cantoraone/CantoraOne-Regular.ttf : 0a41216a2daa8f0fd7e23bc51fefd6bbabe4565db23c4df7d7956e3fc8b8213b
+license    : GPL-2.0-or-later # CHECK ME
+summary    : Cantora ('Singer' in Spanish) is a friendly semi-formal, semi-condensed, semi–sans-serif font, from Pablo Impallari
+description: |
+    Cantora ('Singer' in Spanish) is a friendly semi-formal, semi-condensed, semi–sans-serif font, from Pablo Impallari
+extract    : no
+install    : |
+    install -dm755 "${installdir}/usr/share/fonts/TTF/cantora"
+    install -Dpm644 $sources/*.ttf "${installdir}/usr/share/fonts/TTF/cantora"

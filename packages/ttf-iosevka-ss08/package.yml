@@ -1,0 +1,13 @@
+name       : ttf-iosevka-ss08
+version    : 7.0.3
+release    : 10
+source     :
+    - https://github.com/be5invis/Iosevka/releases/download/v7.0.3/ttf-iosevka-ss08-7.0.3.zip : b4ab848346ceaf6800a11269206361b9a282ac2123c11e8a4fd672e8bc2e1c96
+license    : GPL-2.0-or-later # CHECK ME
+summary    : Typeface family designed for coding, terminal use and technical documents.
+description: |
+    Typeface family designed for coding, terminal use and technical documents.
+
+install    : |
+    install -d ${installdir}/usr/share/fonts/TTF/
+    install -m644 $workdir/*.ttf ${installdir}/usr/share/fonts/TTF/

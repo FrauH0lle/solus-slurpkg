@@ -1,0 +1,30 @@
+name       : plasma-wallpapers-dynamic
+version    : 3.3.9
+release    : 5
+source     :
+    - https://github.com/zzag/plasma5-wallpapers-dynamic/archive/refs/tags/3.3.9.tar.gz : 15bdf516942b1999e722d59789777060c7de2cd058bed4c48628df9e1892f8fd
+license    : GPL-2.0-or-later # CHECK ME
+summary    : Dynamic wallpaper plugin for KDE Plasma
+description: |
+    Dynamic wallpaper plugin for KDE Plasma
+builddeps  :
+    - pkgconfig(Qt5Qml)
+    - pkgconfig(Qt5Core)
+    - pkgconfig(Qt5Location)
+    - pkgconfig(libexif)
+    - pkgconfig(libheif)
+    - pkgconfig(Qt5QuickControls2)
+    - kcmutils-devel
+    - ki18n-devel
+    - kirigami2-devel
+    - kpackage-devel
+    - extra-cmake-modules
+    - plasma-framework-devel
+rundeps    :
+    - geoclue
+setup      : |
+    %cmake
+build      : |
+    %make
+install    : |
+    %make_install

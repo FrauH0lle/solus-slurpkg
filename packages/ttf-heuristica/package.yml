@@ -1,0 +1,12 @@
+name       : ttf-heuristica
+version    : 1.0.2
+release    : 1
+source     :
+    - https://downloads.sourceforge.net/project/heuristica/heuristica-ttf-1.0.2.tar.xz : 08bf21e44941d195dceab637c3d8e22f4b5ce8490c83993cebd85d721b92553d
+license    : GPL-2.0-or-later # CHECK ME
+summary    : A serif latin & cyrillic font, derived from the "Adobe Utopia" font by Apanov
+description: |
+    A serif latin & cyrillic font, derived from the "Adobe Utopia" font by Apanov
+install    : |
+    install -dm 755 "${installdir}/usr/share/fonts/TTF"
+    install -m 644 *.ttf "${installdir}/usr/share/fonts/TTF/"

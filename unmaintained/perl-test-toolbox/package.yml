@@ -1,0 +1,21 @@
+name       : perl-test-toolbox
+version    : 0.4
+release    : 1
+source     :
+    - https://cpan.metacpan.org/authors/id/M/MI/MIKO/Test-Toolbox-0.4.tar.gz : 4020b5c7f3a15ac9b187d05dfd9816b8030ec0d4a47ff8373f7633bb614ebdc3
+license    : Artistic-1.0-Perl
+component  : programming.perl
+summary    : Test::Toolbox - tools for testing
+description: |
+    Test::Toolbox - tools for testing
+builddeps  :
+    - perl
+    - perl-module-build
+setup      : |
+    %perl_setup
+build      : |
+    %perl_build
+install    : |
+    %perl_install
+check      : |
+    %perl_build test

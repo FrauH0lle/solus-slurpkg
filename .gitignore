@@ -1,0 +1,19 @@
+.DS_Store
+.idea
+*.log
+tmp/
+
+src/common
+
+src/Makefile.common
+src/Makefile
+src/Makefile.iso
+
+# Built packages
+*.eopkg
+!prebuilt/*.eopkg
+# pspec files
+pspec_x86_64.xml
+
+# secrets
+apikeys.ini

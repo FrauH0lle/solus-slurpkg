@@ -1,0 +1,32 @@
+name       : languagetool
+version    : 5.3
+release    : 1
+source     :
+    - https://www.languagetool.org/download/LanguageTool-5.3.zip : 3303c97a331605d8ffa496bceb08120835543ccd4408e8067178fb9f16476dc2
+license    : GPL-2.0-or-later # CHECK ME
+summary    : An open source language checker
+description: |
+    An open source language checker
+builddeps  :
+    - unzip
+rundeps    :
+    - openjdk-11
+install    : |
+    mkdir -p $installdir/usr/bin
+    mkdir -p $installdir/usr/share/java/%package%
+    mkdir -p $installdir/usr/share/%package%/META-INF
+    mkdir -p $installdir/usr/share/%package%/org
+    mkdir -p $installdir/usr/share/%package%/third-party-licenses
+
+    install -m644 *.jar "$installdir"/usr/share/java/%package%
+    rm *.jar
+    install -m644 libs/*.jar "$installdir"/usr/share/java/%package%
+    rm -r libs
+
+    for file in $(find . -type f); do
+    install -m 644 -D ${file} "$installdir"/usr/share/%package%/${file#source/}
+    done
+
+    install -m755 "$pkgfiles"/%package%.sh "$installdir"/usr/bin/%package%
+    mkdir -p "$installdir"/%libdir%/systemd/system
+    install -m644 "$pkgfiles"/%package%.service "$installdir"/%libdir%/systemd/system/%package%.service

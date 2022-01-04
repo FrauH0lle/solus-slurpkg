@@ -1,0 +1,23 @@
+name       : auto-cpufreq
+version    : 1.5.1
+release    : 2
+source     :
+    - https://github.com/AdnanHodzic/auto-cpufreq/archive/v1.5.1.tar.gz : 846d0ec46f82d1545aac63807c22086dbd3956c25e5398e39f709ccfc8c1f327
+license    : GPL-2.0-or-later # CHECK ME
+summary    : Automatic CPU speed & power optimizer
+description: |
+    Automatic CPU speed & power optimizer
+builddeps  :
+    - python-setuptools
+rundeps    :
+    - python-distro
+    - python-psutil
+    - python-click
+setup      : |
+    sed -i 's|usr/local|usr|g' "scripts/auto-cpufreq.service" source/core.py
+build      : |
+    %python3_setup
+install    : |
+    %python3_install
+    install -Dm755 scripts/cpufreqctl.sh -t "$installdir/usr/share/auto-cpufreq/scripts"
+    install -Dm644 "scripts/auto-cpufreq.service" -t "$installdir/usr/lib/systemd/system"

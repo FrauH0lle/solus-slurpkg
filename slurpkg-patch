@@ -1,0 +1,240 @@
+#!/usr/bin/env bash
+
+# Patch a package from the Solus Shannon repository
+
+
+# Expected env variables:
+# HOME
+
+
+# Error handling
+trap '[ "$?" -ne 0 ] && printf "\nAn error occurred\n"' EXIT
+
+
+# Source library
+source "$(dirname $(realpath ${BASH_SOURCE[0]}))/libslurpkg"
+
+
+# Variables
+patches_dir="$(dirname $(realpath ${BASH_SOURCE[0]}))/patches"
+slurpkg_local_db="$HOME/.local/share/slurpkg/slurpkg-db.json"
+local_repo="/var/lib/solbuild/local"
+
+
+# Create DB directory if necessary
+if [[ ! -d "$HOME/.local/share/slurpkg" ]]; then
+    mkdir -p "$HOME/.local/share/slurpkg"
+fi
+
+# Check for json database
+if [[ ! -f "$slurpkg_local_db" ]]; then
+    # If it does not exist, create a new one
+    jq -n '{}' > "$slurpkg_local_db"
+fi
+
+# Check for patched_pkgs entry
+if [[ -f "$slurpkg_local_db" ]]; then
+    if [[ "$(jq 'has("patched_pkgs")' $slurpkg_local_db)" == "false" ]]; then
+        # Add entry if it does not exist
+        jq '. += {"patched_pkgs" : []}' "$slurpkg_local_db" > /tmp/slurpkg-db.json && mv /tmp/slurpkg-db.json "$slurpkg_local_db"
+    fi
+fi
+
+
+# Print usage to stdout.
+# Arguments:
+#   None
+# Outputs:
+#   Print usage with examples.
+slurpkg_patches_help() {
+    cat <<EOF
+Applay patches to Solus packages and add patched packages to local Solus
+package repository.
+
+Usage:
+
+    slurpkg patches [options]
+
+Options:
+    help:       show this message
+EOF
+}
+
+# Retrieve value from patched_pkgs array in slurpkg DB.
+# Arguments:
+#   pkg_name
+#   key_name
+# Outputs:
+#   Value of key_name
+db_get_info() {
+    pkg_name="$1"
+    key_name="$2"
+    jq -r '.patched_pkgs[] | select(.name | contains("'$pkg_name'")) | ."'$key_name'"' "$slurpkg_local_db"
+}
+
+slurpkg_patches() {
+    while [[ $# -gt 0 ]]; do
+        key="$1"
+
+        case $key in
+            help)
+                slurpkg_patches_help
+                exit 0
+                ;;
+            *)  # Default case: No arguments
+                break
+                ;;
+        esac
+    done
+
+    # Collect packages to patch in an array
+    local patch_pkgs="$(find $patches_dir -mindepth 1 -type d)"
+    local pkgs_names=( $(echo "$patch_pkgs") )
+    # Strip path in order to get repository names
+    for i in "${!pkgs_names[@]}"; do
+        pkgs_names["$i"]="${pkgs_names[$i]##*/}"
+    done
+
+    # Update repository index
+    sudo eopkg update-repo
+
+    # Process packages to patch
+    for i in "${!pkgs_names[@]}"; do
+        local name="${pkgs_names[$i]}"
+
+        # Get info from slurpkg DB
+        local db_release="$(db_get_info $name release)"
+        local db_version="$(db_get_info $name version)"
+        local db_commit="$(db_get_info $name commit)"
+
+        # Git repo URL
+        local pkg_url="https://dev.getsol.us/source/$name.git"
+
+        # Clone repo
+        if [[ ! -d "$HOME/.cache/slurpkg/repos/$name" ]]; then
+            git clone "$pkg_url" "$HOME/.cache/slurpkg/repos/$name" ||
+                { printf >&2 "Could not clone repository of package %s\nCheck if the name is correct.\n" "${name}";
+                  exit 1; }
+        else
+            echo "$name repository already cloned"
+        fi
+
+        # Get all releases from eopkg DB, sort them and store in an array
+        local all_releases=( $(xmllint --xpath '(//Package[Name="'$name'"]/History/Update/@release)' \
+            /var/lib/eopkg/index/Solus/eopkg-index.xml |
+                             grep -Po '(?<=release=")[0-9-]+(?=")' |
+                             sort -nr) )
+        if [[ -z "$all_releases" ]]; then
+            printf >&2 "Could not find releases of package %s\n" "${name}"
+            exit 1
+        fi
+
+        # Latest release should be first element
+        local release="${all_releases[0]}"
+        local version=$(xmllint --xpath 'string(//Package[Name="'$name'"]/History/Update[@release='$release']/Version)' /var/lib/eopkg/index/Solus/eopkg-index.xml)
+        if [[ -z "$version" ]]; then
+            printf >&2 "Could not determine version of package %s release %s\n" "${name}" "${release}"
+            exit 1
+        fi
+
+        # Select repository
+        _pushd "$HOME/.cache/slurpkg/repos/$name"
+
+        # Get current commit and remote commit
+        local current_commit="$(git rev-parse HEAD)"
+        local remote_commit="$(git ls-remote https://dev.getsol.us/source/$name.git HEAD | awk '{ print $1}')"
+
+        # Check if local repo is up-to-date
+        if [[ "$current_commit" == "$remote_commit" ]]; then
+            echo-info "Local repository already up-to-date."
+        else
+            # Clean repository and Update to latest commit
+            if [[ `git status --porcelain` ]]; then
+                git reset --hard master || exit 1
+                git clean -fdx || exit 1
+            fi
+            git checkout master || exit 1
+            git pull --rebase || exit 1
+        fi
+
+        # Get commit of this release and version
+        # Release should be enough as an identifier as it is authoritative
+        if [[ ! -z "$release" ]]; then
+            local target_commit=$(git rev-list --all package.yml | (
+                         while read revision; do
+                             git --no-pager grep -e "^release.*: $release" --all-match $revision package.yml
+                         done
+                            ) | cut -d":" -f1)
+        else
+            printf >&2 "Could not find release of package %s\n" "${name}"
+            exit 1
+        fi
+
+        if [[ "$target_commit" == "$current_commit" ]]; then
+            echo-info "Target commit already checked out"
+        else
+            # Checkout correct commit
+            if [[ -z "$target_commit" ]]; then
+                printf >&2 "Could not get commit to checkout of package %s\n" "${name}"
+                exit 1
+            else
+                git checkout "$target_commit"
+            fi
+        fi
+
+        # Check if target revision was already patched
+        local do_patch=1
+        if [[ "$target_commit" == "$db_commit" ]]; then
+            echo-info "$name is already patched."
+            # Ask if patch should be applied again and rebuild package or continue
+            # with next package
+            while true; do
+                read -p "Apply patch again (y/n)?" choice
+                case "$choice" in
+                    y|Y ) do_patch=1; break ;;
+                    n|N ) do_patch=0; break ;;
+                    * ) echo "Please answer with y/Y or n/N.";;
+                esac
+            done
+        fi
+
+        if [[ "$do_patch" -ne 0 ]]; then
+            # Apply the patch to the repository
+            echo-info "Patching $name"
+            if [[ `git status --porcelain` ]]; then
+                git reset --hard "$target_commit" || exit 1
+                git clean -fdx || exit 1
+            fi
+            git apply "$patches_dir/$name/$name.patch" ||
+                { printf >&2 "Could not apply patch.\n"; exit 1; }
+
+            # Build package
+            sudo solbuild build package.yml -p local-main-x86_64 || exit 1
+            sudo mv -v *.eopkg /var/lib/solbuild/local/
+
+            # Add info to DB
+            if [[ -f "$slurpkg_local_db" ]]; then
+                if [[ "$(jq 'has("patched_pkgs")' $slurslurpkg_db)" == "true" ]]; then
+                    # Add entry if it does not exist
+                    jq --arg name "$name" --arg version "$version" --arg release "$release" --arg commit "$target_commit" \
+                        '.patched_pkgs |=  (map(.name) | index($name)) as $ix |
+                if $ix then .[$ix]["version"] = $version |
+                .[$ix]["release"] = $release |
+                .[$ix]["commit"] = $commit
+                else . + [{name: $name, version : $version, release : $release, commit : $commit}] end' \
+                    "$slurslurpkg_db" > /tmp/slurpkg-db.json && mv /tmp/slurpkg-db.json "$slurslurpkg_db"
+                fi
+            fi
+            _popd
+        else
+            _popd
+            continue
+        fi
+    done
+
+    # Rebuild local repository index
+    _pushd "$local_repo"
+    sudo eopkg index --skip-signing "$local_repo"
+    sudo eopkg update-repo
+    _popd
+}

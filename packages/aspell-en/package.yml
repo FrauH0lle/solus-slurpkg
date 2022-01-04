@@ -1,0 +1,19 @@
+name       : aspell-en
+version    : 2020.12.07
+release    : 2
+source     :
+    - https://ftp.gnu.org/gnu/aspell/dict/en/aspell6-en-2020.12.07-0.tar.bz2 : 4c8f734a28a088b88bb6481fcf972d0b2c3dc8da944f7673283ce487eac49fb3
+license    : GPL-2.0-or-later # CHECK ME
+summary    : English dictionary for aspell
+description: |
+    English dictionary for aspell
+builddeps  :
+    - aspell-devel
+rundeps    :
+    - aspell
+setup      : |
+    ./configure
+build      : |
+    %make
+install    : |
+    %make_install

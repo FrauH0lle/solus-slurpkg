@@ -1,0 +1,38 @@
+name       : kdisplay
+version    : 5.20.0
+release    : 2
+source     :
+    - https://gitlab.com/kwinft/kdisplay/-/archive/kdisplay@5.20.0/kdisplay-kdisplay@5.20.0.tar.gz : 94a5cddb1ad7644821aa2689064f835ad99425f4b9a7ce506ddc28c0739af937
+license    : GPL-2.0-or-later # CHECK ME
+summary    : App and daemon for display managing
+description: |
+    App and daemon for display managing
+replaces   :
+    - kscreen
+builddeps  :
+    - pkgconfig(disman)
+    - pkgconfig(Qt5Quick)
+    - pkgconfig(Qt5Sensors)
+    - extra-cmake-modules
+    - kcmutils-devel
+    - kdbusaddons-devel
+    - kdeclarative-devel
+    - kglobalaccel-devel
+    - ki18n-devel
+    - kirigami2-devel
+    - kxmlgui-devel
+    - plasma-framework-devel
+rundeps    :
+    - qt5-graphicaleffects
+setup      : |
+    %cmake \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DKDE_INSTALL_LIBDIR="%libdir%" \
+    -DKDE_INSTALL_LIBEXECDIR="%libdir%/%PKGNAME%" \
+    -DKDE_INSTALL_USE_QT_SYS_PATHS=ON \
+    -DBUILD_TESTING=OFF \
+    -DBUILD_QCH=ON
+build      : |
+    %make
+install    : |
+    %make_install

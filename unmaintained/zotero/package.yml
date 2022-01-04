@@ -1,0 +1,28 @@
+name       : zotero
+version    : 5.0.82
+release    : 2
+source     :
+    - https://download.zotero.org/client/release/5.0.82/Zotero-5.0.82_linux-x86_64.tar.bz2 : 08f18e6e36332a2e590f87fdcd644411af94509e5aeacd9b29b09dd6346d4909
+license    : GPL-3.0-or-later
+summary    : Zotero Standalone. Is a free, easy-to-use tool to help you collect, organize, cite, and share your research sources.
+description: |
+    Zotero Standalone. Is a free, easy-to-use tool to help you collect, organize, cite, and share your research sources.
+rundeps    :
+    - dbus-glib
+    - libgtk-3
+    - libnss
+    - libxt
+install    : |
+    install -dDm755 $installdir/usr/{bin,lib/zotero}
+    mv * $installdir/usr/lib/zotero
+    ln -s /usr/lib/zotero/zotero "$installdir"/usr/bin/zotero
+    install -Dm644 $pkgfiles/zotero.desktop "$installdir"/usr/share/applications/zotero.desktop
+    # Copy zotero icons to a standard location
+    install -Dm644 "$installdir"/usr/lib/zotero/chrome/icons/default/default16.png "$installdir"/usr/share/icons/hicolor/16x16/apps/zotero.png
+    install -Dm644 "$installdir"/usr/lib/zotero/chrome/icons/default/default32.png "$installdir"/usr/share/icons/hicolor/32x32/apps/zotero.png
+    install -Dm644 "$installdir"/usr/lib/zotero/chrome/icons/default/default48.png "$installdir"/usr/share/icons/hicolor/48x48/apps/zotero.png
+    install -Dm644 "$installdir"/usr/lib/zotero/chrome/icons/default/default256.png "$installdir"/usr/share/icons/hicolor/256x256/apps/zotero.png
+    # Disable APP update
+    sed -i '/pref("app.update.enabled", true);/c\pref("app.update.enabled", false);' "$installdir"/usr/lib/zotero/defaults/preferences/prefs.js
+    # No need to keep a shell around when launching Zotero
+    sed -i -r 's/^("\$CALLDIR\/zotero-bin" -app "\$CALLDIR\/application.ini" "\$@")/exec \1/' "$installdir"/usr/lib/zotero/zotero

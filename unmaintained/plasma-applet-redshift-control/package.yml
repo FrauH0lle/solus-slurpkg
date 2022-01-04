@@ -1,0 +1,25 @@
+name       : plasma-applet-redshift-control
+version    : 1.0.18
+release    : 4
+source     :
+    - https://github.com/kotelnik/plasma-applet-redshift-control/archive/v1.0.18.tar.gz : 9f6de46653d9467e155ab857c84ef02021509f96afe0a4a7db9555f2a1da8d46
+license    : GPL-2.0-or-later
+component  : desktop.kde
+summary    : Control redshift from your Plasma Desktop
+description: |
+    Plasma 5 applet for controlling redshift (screen temperature modifying). It allowes basic redshift settings and fast manual temperature control by mouse wheel.
+builddeps  :
+    - pkgconfig(gl)
+    - pkgconfig(Qt5Core)
+    - extra-cmake-modules
+    - plasma-framework-devel
+rundeps    :
+    - redshift
+setup      : |
+    %patch -p1 < $pkgfiles/0001-fix-scrollwheel-behavior.patch
+    %cmake
+build      : |
+    %make
+install    : |
+    %make_install
+    %qml_cache

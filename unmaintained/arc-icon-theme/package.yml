@@ -1,0 +1,27 @@
+name       : arc-icon-theme
+version    : '20201016'
+release    : 7
+source     :
+    - https://gitlab.com/DonHugo/solus-packages/-/raw/master/dummySource.txt : 411f5fe8b6f59365fc37bb18997b7e454ec4332bc49269a4e89b9289fc8c7d84
+license    : GPL-3.0
+component  : desktop.theme
+summary    : The beautiful Arc Icon Theme
+description: |
+    The Arc Icon Theme, part of the beautiful Arc Theme Suite
+builddeps  :
+    - git
+rundeps    :
+    - hicolor-icon-theme
+    - moka-icon-theme
+extract    : no
+networking : yes
+setup      : |
+    git clone --single-branch --branch "Arc-ICONS" "https://github.com/rtlewis88/rtl88-Themes"
+install    : |
+    install -dm755 "${installdir}/usr/share/icons/Arc-ICONS"
+    # Remove old cache
+    rm Arc-ICONS/icon-theme.cache
+    # Replace spaces in filenames with underscores
+    find $1 -name "* *" -type f -print0 | \
+    while read -d $'\0' f; do mv -v "$f" "${f// /_}"; done
+    cp -r Arc-ICONS/* "${installdir}/usr/share/icons/Arc-ICONS/"

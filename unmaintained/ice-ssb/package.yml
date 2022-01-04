@@ -1,0 +1,17 @@
+name       : ice-ssb
+version    : 6.0.6
+release    : 1
+source     :
+    - https://github.com/peppermintos/ice/archive/v6.0.6.tar.gz : 5422094e74cb9b77059631b5bc4ed6c74e7d3d48390aef142f638c8735a942cf
+license    : GPL-2.0-or-later # CHECK ME
+summary  : A simple Site Specific Browser for Firefox, Chromium and Google Chrome from "Peppermint OS" Project
+description: |
+    A simple Site Specific Browser for Firefox, Chromium and Google Chrome from "Peppermint OS" Project
+rundeps  :
+  - python-requests
+  - python-beautifulsoup4
+  - python-gobject
+  - python-lxml
+install    : |
+    mkdir -p $installdir/usr
+    mv usr/* $installdir/usr

@@ -1,0 +1,55 @@
+name       : fwupd
+version    : 1.5.1
+release    : 7
+source     :
+    - https://github.com/fwupd/fwupd/archive/1.5.1.tar.gz : 16e59ea1ce6e109246f86a2932cc84d2e06ed836d62dde1412493a5d26109477
+license    : GPL-2.0-or-later # CHECK ME
+summary    : Simple daemon to allow session software to update firmware
+description: |
+    Simple daemon to allow session software to update firmware
+networking : yes
+optimize   :
+    - no-symbolic
+builddeps  :
+    - pkgconfig(xmlb)
+    - pkgconfig(gusb)
+    - pkgconfig(sqlite3)
+    - pkgconfig(libarchive)
+    - pkgconfig(jcat)
+    - pkgconfig(libsoup-2.4)
+    - pkgconfig(valgrind)
+    - pkgconfig(gtk-doc)
+    - pkgconfig(efivar)
+    - pkgconfig(tss2-esys)
+    - pkgconfig(libelf)
+    - pkgconfig(py3cairo)
+    - pkgconfig(pygobject-3.0)
+    - pkgconfig(libsmbios_c)
+    - pkgconfig(umockdev-1.0)
+    - pkgconfig(flashrom)
+    - pkgconfig(gpgme)
+    - pkgconfig(colorhug)
+    - pkgconfig(libgcab-1.0)
+    - python-pillow-devel
+    - gnu-efi-devel
+    - libgnutls-utils
+    - git
+    - vala
+    - gcab
+    - help2man
+    - noto-sans-ttf
+setup      : |
+    %meson_configure -Dgtkdoc=false
+build      : |
+    %ninja_build
+check      : |
+    %ninja_check
+install    : |
+    %ninja_install
+    # Fixup mode to match polkit
+    install -d -o root -g 102 -m 750 "${pkgdir}"/usr/share/polkit-1/rules.d
+    # Remove the tests
+    # rm -r "${installdir}"/usr/share/installed-tests/
+    # Add commands to mount and unmount the boot partition
+    # sed -i '/^\[Service\]/a ExecStartPost=umount /boot' $installdir/usr/lib/systemd/system/fwupd.service
+    sed -i '/^\[Service\]/a ExecStartPre=/usr/bin/clr-boot-manager mount-boot' $installdir/usr/lib/systemd/system/fwupd.service

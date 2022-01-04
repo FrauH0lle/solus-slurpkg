@@ -1,0 +1,38 @@
+name       : borgmatic-bin
+version    : 1.5.13
+release    : 7
+source     :
+    - git|https://github.com/cmarquardt/borgmatic-binary.git : a7e5529b064f4db1e7a97b44f90c28201e8a46f4
+license    : GPL-2.0-or-later # CHECK ME
+summary    : Simple, configuration-driven backup software for servers and workstations
+description: |
+    Simple, configuration-driven backup software for servers and workstations
+builddeps  :
+    - pkgconfig(python3)
+    - python3
+    - pip
+rundeps    :
+    - borg
+networking : yes
+setup      : |
+    sed -i 's/VERSION := 1.5.1/VERSION := %version%/' Makefile
+    sed -i 's/python -c/python3 -c/' Makefile
+    sed -i 's/pip /pip3 /g' Makefile
+    sed -i 's/pip3 install/pip3 install --user/g' Makefile
+build      : |
+    pip3 install --user pyinstaller
+    export PATH=/home/build/.local/bin:$PATH
+    %make
+install    : |
+    mkdir -p "$installdir/usr/bin"
+    cd borgmatic-$version
+    cp dist/* "$installdir/usr/bin/"
+
+    # FIXME Use old service file for now
+    cp $pkgfiles/borgmatic.service sample/systemd/borgmatic.service
+    sed -i 's|/root/.local/bin|/usr/bin|' "sample/systemd/borgmatic.service"
+
+    install -d "$installdir/usr/lib/systemd/system"
+    install -m 644 sample/systemd/* "$installdir/usr/lib/systemd/system/"
+    install -d "$installdir/etc/systemd/user"
+    install -m 644 sample/systemd/* "$installdir/etc/systemd/user/"

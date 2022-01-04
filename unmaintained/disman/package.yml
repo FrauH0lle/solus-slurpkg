@@ -1,0 +1,28 @@
+name       : disman
+version    : 0.520.0
+release    : 2
+source     :
+    - https://gitlab.com/kwinft/disman/-/archive/disman@0.520.0/disman-disman@0.520.0.tar.gz : b2b67beeb13eda523142e52ce261c560c2b1c1d6b45d0226b956cdf48e9d14a6
+license    : LGPL
+summary    : Qt/C++ display management library
+description: |
+    Qt/C++ display management library
+builddeps  :
+    - pkgconfig(Qt5X11Extras)
+    - pkgconfig(xcb)
+    - extra-cmake-modules
+    - kcoreaddons-devel
+    - kwayland-devel
+    - wrapland-devel
+setup      : |
+    %cmake \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DKDE_INSTALL_LIBDIR="%libdir%" \
+    -DKDE_INSTALL_LIBEXECDIR="%libdir%/%PKGNAME%" \
+    -DKDE_INSTALL_USE_QT_SYS_PATHS=ON \
+    -DBUILD_TESTING=OFF \
+    -DBUILD_QCH=ON
+build      : |
+    %make
+install    : |
+    %make_install

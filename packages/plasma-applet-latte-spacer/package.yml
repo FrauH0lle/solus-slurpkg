@@ -1,0 +1,14 @@
+name       : plasma-applet-latte-spacer
+version    : 0.3.0
+release    : 2
+source     :
+    - git|https://github.com/psifidotos/applet-latte-spacer.git : 8a0e5b43f9c795411f0e63879a1c932164dae15a
+license    : GPL-2.0-or-later # CHECK ME
+summary    : Plasma applet that acts as a spacer between applets
+description: |
+    Plasma applet that acts as a spacer between applets
+install    : |
+    _pkgdir="$installdir/usr/share/plasma/plasmoids/org.kde.latte.spacer"
+
+    install -Dm644 metadata.desktop -t "$_pkgdir"
+    find contents/ -type f -exec install -Dm644 "{}" "$_pkgdir/{}" \;

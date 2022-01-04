@@ -1,0 +1,51 @@
+name       : jdownloader2
+version    : 1
+release    : 3
+source     :
+    - https://gitlab.com/DonHugo/solus-packages/-/raw/master/dummySource.txt : 411f5fe8b6f59365fc37bb18997b7e454ec4332bc49269a4e89b9289fc8c7d84
+license    : GPL-2.0-or-later # CHECK ME
+summary    : Download manager for one-click hosting sites.
+description: |
+    Download manager, written in Java, for one-click hosting sites like
+    Rapidshare and Megaupload. Uses its own updater.
+rundeps    :
+    - wget
+    - unzip
+rundeps    :
+    - openjdk-11
+extract    : no
+install    : |
+    tar xf $pkgfiles/jdownloader2.tar.gz && cd jdownloader2
+
+    install -d -m755 $installdir/opt/JDownloaderScripts
+    install -D -m755 JDownloader $installdir/opt/JDownloaderScripts/JDownloader
+    install -D -m755 JDownloaderHeadless $installdir/opt/JDownloaderScripts/JDownloaderHeadless
+    install -D -m755 JDownloaderHeadlessCtl $installdir/opt/JDownloaderScripts/JDownloaderHeadlessCtl
+    install -D -m755 functions.sh $installdir/opt/JDownloaderScripts/functions.sh
+    install -D -m755 JDownloaderHeadlessCleanLogin $installdir/opt/JDownloaderScripts/JDownloaderHeadlessCleanLogin
+  
+  
+    install -D -m644 jdownloader.xml $installdir/usr/share/mime/packages/jdownloader.xml
+    install -D -m644 jdownloader.desktop $installdir/usr/share/applications/jdownloader.desktop
+    install -D -m644 jd-containers.desktop $installdir/usr/share/applications/jd-containers.desktop
+    install -D -m644 jd-container16.png $installdir/usr/share/icons/hicolor/16x16/mimetypes/jd-container.png
+    install -D -m644 jd-container22.png $installdir/usr/share/icons/hicolor/22x22/mimetypes/jd-container.png
+    install -D -m644 jd-container24.png $installdir/usr/share/icons/hicolor/24x24/mimetypes/jd-container.png
+    install -D -m644 jd-container32.png $installdir/usr/share/icons/hicolor/32x32/mimetypes/jd-container.png
+    install -D -m644 jd-container48.png $installdir/usr/share/icons/hicolor/48x48/mimetypes/jd-container.png
+    install -D -m644 jd-container256.png $installdir/usr/share/icons/hicolor/256x256/mimetypes/jd-container.png
+    install -D -m644 jdownloader16.png $installdir/usr/share/icons/hicolor/16x16/apps/jdownloader.png
+    install -D -m644 jdownloader22.png $installdir/usr/share/icons/hicolor/22x22/apps/jdownloader.png
+    install -D -m644 jdownloader24.png $installdir/usr/share/icons/hicolor/24x24/apps/jdownloader.png
+    install -D -m644 jdownloader32.png $installdir/usr/share/icons/hicolor/32x32/apps/jdownloader.png
+    install -D -m644 jdownloader48.png $installdir/usr/share/icons/hicolor/48x48/apps/jdownloader.png
+    install -D -m644 jdownloader256.png $installdir/usr/share/icons/hicolor/256x256/apps/jdownloader.png
+    install -D -m644 jdownloader.service $installdir/%libdir%/systemd/system/jdownloader.service
+    install -d -m775 $installdir/opt/JDownloader
+    mkdir -p $installdir/usr/bin
+  
+    ln -sv /opt/JDownloaderScripts/JDownloader  $installdir/usr/bin/JDownloader
+    ln -sv /opt/JDownloaderScripts/JDownloader $installdir/usr/bin/jdownloader
+    ln -sv /opt/JDownloaderScripts/JDownloaderHeadless $installdir/usr/bin/JDownloaderHeadless
+    ln -sv /opt/JDownloaderScripts/JDownloaderHeadlessCtl $installdir/usr/bin/JDownloaderHeadlessCtl
+    ln -sv /opt/JDownloaderScripts/JDownloaderHeadlessCleanLogin $installdir/usr/bin/JDownloaderHeadlessCleanLogin

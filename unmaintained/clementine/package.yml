@@ -1,0 +1,50 @@
+name       : clementine
+version    : 1.4.0_rc1.601
+release    : 6
+source     :
+    - https://github.com/clementine-player/Clementine/archive/refs/tags/1.4.0rc1-601-ga7468dcd4.tar.gz : 6b6f8d2d2ef3fe86b910c9e518fce5617eff9a04a241bb0d2a26290fa886b267
+license    : GPL-2.0-or-later # CHECK ME
+summary    : A modern music player and library organizer.
+description: |
+    A modern music player and library organizer.
+builddeps  :
+    - pkgconfig(alsa)
+    - pkgconfig(fftw3)
+    - pkgconfig(glew)
+    - pkgconfig(gnutls)
+    - pkgconfig(gstreamer-audio-1.0)
+    - pkgconfig(libchromaprint)
+    - pkgconfig(libcdio)
+    - pkgconfig(libgpod-1.0)
+    # - pkgconfig(libplist)
+    - pkgconfig(libmtp)
+    - pkgconfig(libpulse)
+    - pkgconfig(phonon4qt5)
+    - pkgconfig(protobuf)
+    - pkgconfig(Qt5UiTools)
+    - pkgconfig(Qt5X11Extras)
+    - pkgconfig(sqlite3)
+    - pkgconfig(taglib)
+    - gstreamer-1.0-plugins-good
+    - gstreamer-1.0-plugins-ugly
+    - gstreamer-1.0-plugins-bad
+    - gstreamer-1.0-plugins-base
+    - libboost-devel
+    - sparsehash
+    - liblastfm-devel
+    - liblastfm
+rundeps    :
+    - cryptopp
+    - gst-plugins-base
+    - gst-plugins-good
+    - gst-plugins-bad
+    - gst-plugins-ugly
+    - libgpod
+    - libmtp
+    - qt5-x11extras
+setup      : |
+    %cmake
+build      : |
+    %make
+install    : |
+    %make_install

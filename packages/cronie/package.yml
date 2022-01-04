@@ -1,0 +1,30 @@
+name       : cronie
+version    : 1.5.7
+release    : 2
+source     :
+    - https://github.com/cronie-crond/cronie/releases/download/cronie-1.5.7/cronie-1.5.7.tar.gz : 538bcfaf2e986e5ae1edf6d1472a77ea8271d6a9005aee2497a9ed6e13320eb3
+license    : custom:BSD
+summary    : Daemon that runs specified programs at scheduled times and related tools
+description: |
+    Daemon that runs specified programs at scheduled times and related tools
+setup      : |
+    %autogen --enable-anacron \
+    --with-inotify \
+    --with-pam
+build      : |
+    %make
+install    : |
+    %make_install
+
+    chmod u+s $installdir/usr/bin/crontab
+    install -d $installdir/var/spool/{ana,}cron
+    install -d $installdir/etc/cron.{d,hourly,daily,weekly,monthly}
+
+    install -Dm644 $pkgfiles/deny $installdir/etc/cron.deny
+    install -Dm644 $pkgfiles/pam.d $installdir/etc/pam.d/crond
+    install -Dm644 $pkgfiles/service $installdir/usr/lib/systemd/system/cronie.service
+    install -Dm644 $pkgfiles/etc-crontab $installdir/etc/crontab
+
+    install -Dm644 contrib/anacrontab $installdir/etc/anacrontab
+    install -Dm644 contrib/0hourly $installdir/etc/cron.d/0hourly
+    install -Dm755 contrib/0anacron $installdir/etc/cron.hourly/0anacron

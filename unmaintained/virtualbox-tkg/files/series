@@ -1,0 +1,7 @@
+Disable-automatic-check-for-updates.patch
+0001-Fix-rdesktop-vrdp-keymaps-path.patch
+0001-Patch-out-notify-send-call.patch
+virtualbox-fix-ui-background-color.patch
+work-around-black-screen.patch
+vb-6.1.16-modal-dialog-parent.patch
+linux-5-11.patch

@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+# Public library for slurpkg
+
+# Functions which are used in multiple parts of the script, should be stored
+# here.
+
+
+# Detect if required dependencies are installed.
+# Arguments:
+#   None
+# Outputs:
+#   None or a message.
+check_dependencies() {
+    # xmllint
+    if ! command -v xmllint >/dev/null; then
+        xmllint_cmd=false
+    else
+        xmllint_cmd=true
+    fi
+    # jq
+    if ! command -v jq >/dev/null; then
+        jq_cmd=false
+    else
+        jq_cmd=true
+    fi
+
+    if [ $xmllint_cmd = false ] || [ $jq_cmd = false ]; then
+        cat <<EOF
+Make sure the following dependencies are installed:
+     xmllint
+     jq
+
+You can install them via
+
+    sudo eopkg install libxml2 jq
+EOF
+        exit 1
+    fi
+}
+
+# Pretty printing for 'echo'.
+# Arguments:
+#   A string as used for 'echo'.
+# Outputs:
+#   String enclosed in formatting.
+function echo-info  { printf "\r\033[2K\033[0;34m[ .. ]\033[0m %s\n" "$*"; }
+function echo-skip  { printf "\r\033[2K\033[38;05;240m[SKIP]\033[0m %s\n" "$*"; }
+function echo-ok    { printf "\r\033[2K\033[0;32m[ OK ]\033[0m %s\n" "$*"; }
+function echo-fail  { printf "\r\033[2K\033[0;31m[FAIL]\033[0m %s\n" "$*"; }
+
+# Silent pushd.
+# Arguments:
+#   Directory as used for 'pushd'.
+# Outputs:
+#   None
+_pushd() {
+    command pushd "$@" > /dev/null
+}
+
+# Silent popd.
+# Arguments:
+#   Directory as used for 'popd'.
+# Outputs:
+#   None
+_popd() {
+    command popd "$@" > /dev/null
+}
+
+# Strip surrounding quotes (" or ') from string.
+# Arguments:
+#   var
+# Outputs:
+#   var without quotes.
+strip_quotes() {
+    local -n var="$1"
+    [[ "${var}" == \"*\" || "${var}" == \'*\' ]] && var="${var:1:-1}"
+}

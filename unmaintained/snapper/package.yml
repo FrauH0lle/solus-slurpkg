@@ -1,0 +1,39 @@
+name       : snapper
+version    : 0.8.14
+release    : 2
+source     :
+    - https://github.com/openSUSE/snapper/archive/v0.8.14.tar.gz : d3abe4d542dade06b361e7c89b5de03bb5202853bc5e314ca74080caa24923f6
+license    : GPL-2.0-or-later # CHECK ME
+summary    : A tool for managing BTRFS and LVM snapshots. It can create, diff and restore snapshots and provides timelined auto-snapping.
+description: |
+    A tool for managing BTRFS and LVM snapshots. It can create, diff and restore snapshots and provides timelined auto-snapping.
+builddeps  :
+    - pkgconfig(libacl)
+    - pkgconfig(dbus-1)
+    - pkgconfig(libxml-2.0)
+    - pkgconfig(json-c)
+    - pkgconfig(lvm2app)
+    - pkgconfig(libxslt)
+    - btrfs-progs-devel
+    - libboost-devel
+    - pam-devel
+    - pkgconfig(systemd)
+    - pkgconfig(ext2fs)
+    - pkgconfig(gtk-doc)
+rundeps    :
+    - btrfs-progs
+    - libboost
+setup      : |
+    %apply_patches
+
+    aclocal
+    libtoolize --force --automake --copy
+    autoheader
+    automake --add-missing --copy
+    autoconf
+    %reconfigure --disable-zypp --disable-silent-rules
+build      : |
+    %make
+install    : |
+    %make_install
+    install -Dm644 data/sysconfig.snapper "$installdir"/etc/sysconfig/snapper

@@ -1,0 +1,28 @@
+name       : perl-crypt-ssleay
+version    : 0.73
+release    : 1
+source     :
+    - https://www.cpan.org/CPAN/authors/id/N/NA/NANIS/Crypt-SSLeay-0.73_04.tar.gz : b7098d14d3db4a089eee765440b27c2838e204b61297c062c4feb50eb75aee10
+license    : Artistic-1.0-Perl
+component  : programming.perl
+summary    : OpenSSL glue that provides LWP https support
+description: |
+    OpenSSL glue that provides LWP https support
+builddeps  :
+    - perl
+    - perl-path-class
+    - perl-try-tiny
+    - perl-lwp-protocol-https
+    - perl-bytes-random-secure
+rundeps    :
+    - perl-path-class
+    - perl-try-tiny
+    - perl-lwp-protocol-https
+build      : |
+    PERL_USE_UNSAFE_INC=1 perl Makefile.PL PREFIX=%PREFIX% INSTALLDIRS=vendor \
+    DESTDIR="%installroot%"
+    %make
+install    : |
+    %perl_install
+check      : |
+    %perl_build test

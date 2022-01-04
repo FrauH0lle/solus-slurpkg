@@ -1,0 +1,173 @@
+#!/usr/bin/env bash
+
+# Build packages in local build directory
+
+
+# Expected env variables:
+# HOME
+
+
+# Error handling
+trap '[ "$?" -ne 0 ] && printf "\nAn error occurred\n"' EXIT
+
+
+# Source library
+source "$(dirname $(realpath ${BASH_SOURCE[0]}))/libslurpkg"
+
+
+# Variables
+build_dir="$(dirname $(realpath ${BASH_SOURCE[0]}))/build"
+slurpkg_local_db="$HOME/.local/share/slurpkg/slurpkg-db.json"
+slurpkg_db="$(dirname $(realpath ${BASH_SOURCE[0]}))/slurpkg.json"
+local_repo="/var/lib/solbuild/local"
+
+
+# Create DB directory if necessary
+if [[ ! -d "$HOME/.local/share/slurpkg" ]]; then
+    mkdir -p "$HOME/.local/share/slurpkg"
+fi
+
+# Check for json database
+if [[ ! -f "$slurpkg_local_db" ]]; then
+    # If it does not exist, create a new one
+    jq -n '{}' > "$slurpkg_local_db"
+fi
+
+# Check for built__pkgs entry
+if [[ -f "$slurpkg_local_db" ]]; then
+    if [[ "$(jq 'has("built_pkgs")' $slurpkg_local_db)" == "false" ]]; then
+        # Add entry if it does not exist
+        jq '. += {"built_pkgs" : []}' "$slurpkg_local_db" > /tmp/slurpkg-db.json && mv /tmp/slurpkg-db.json "$slurpkg_local_db"
+    fi
+fi
+
+# Check for kernel_modules entry
+if [[ -f "$slurpkg_local_db" ]]; then
+    if [[ "$(jq 'has("kernel_modules")' $slurpkg_local_db)" == "false" ]]; then
+        # Add entry if it does not exist
+        jq '. += {"kernel_modules" : []}' "$slurpkg_local_db" > /tmp/slurpkg-db.json && mv /tmp/slurpkg-db.json "$slurpkg_local_db"
+    fi
+fi
+
+
+# Print usage to stdout.
+# Arguments:
+#   None
+# Outputs:
+#   Print usage with examples.
+slurpkg_build_help() {
+    cat <<EOF
+Build packages and add them to local Solus package repository.
+
+Usage:
+
+    slurpkg build [options] <path-to-pkg1> <path-to-pkg2> ...
+
+Options:
+    help:       show this message
+EOF
+}
+
+# Build all package in 'build' directory and move them into the local
+# repository.
+# Arguments:
+#   None
+# Outputs:
+#   None. Will build the packages as a side effect.
+slurpkg_build() {
+    local packages_paths=()
+    while [[ $# -gt 0 ]]; do
+        key="$1"
+
+        case $key in
+            help)
+                slurpkg_build_help
+                exit 0
+                ;;
+            *)  # Default case: Store arguments in packages_paths arrary
+                packages_paths+=("$1")
+                shift
+                ;;
+        esac
+    done
+
+    # Collect packages to build in an array if none were provided
+    if [[ -z "$packages_paths" ]]; then
+        local packages_paths="$(find $build_dir -mindepth 1 -type l)"
+        local packages_paths=( $(echo "$packages_paths") )
+    fi
+    
+    # Strip path in order to get package names
+    local packages_names=()
+    for i in "${!packages_paths[@]}"; do
+        packages_names["$i"]="${packages_paths[$i]##*/}"
+    done
+
+    _pushd "$local_repo"
+    for i in "${!packages_paths[@]}"; do
+        if [[ ! -f "${packages_paths[$i]}/package.yml" ]]; then
+            echo-fail "Package $(tput bold)${packages_names[$i]}$(tput sgr0) sources not found."
+            exit 1
+        else
+            pkg_version="$(awk -F': ' '/^version/ {print $2}' ${packages_paths[$i]}/package.yml)"
+            strip_quotes pkg_version
+            pkg_release="$(awk -F': ' '/^release/ {print $2}' ${packages_paths[$i]}/package.yml)"
+            if compgen -G "${local_repo}/${packages_names[$i]}-${pkg_version}-${pkg_release}-*.eopkg" > /dev/null; then
+                echo-ok "Package $(tput bold)${packages_names[$i]}$(tput sgr0) already in and up to date."
+            else
+                # Check if local dependencies are defined and build them first
+                declare -a deps="($(jq -r '.packages[] | select(.name | contains("'${packages_names[$i]}'")) | select(.dependencies != null) | .dependencies[] | @sh' "$slurpkg_db"))"
+                if [[ ! -z "$deps" ]]; then
+                    # Append full path to dependencies
+                    for j in "${!deps[@]}"; do
+                        deps["$j"]="$build_dir/${deps[$j]}"
+                    done
+                    echo-info "Compiling dependencies for $(tput bold)${packages_names[$i]}$(tput sgr0)..."
+                    # Run in subshell to avoid confusion with variables
+                    ( slurpkg_build "${deps[@]}" )
+                fi
+
+                echo-info "Compiling $(tput bold)${packages_names[$i]}$(tput sgr0)..."
+                echo "Triggering index..."
+                sudo eopkg index --skip-signing "$local_repo"
+                sudo solbuild build "${packages_paths[$i]}/package.yml" -p local-main-x86_64 || \
+                    { echo-fail "$(tput bold)Unable to build ${packages_names[$i]}!$(tput sgr0)"; exit 1; }
+
+                # Add infos to DB
+                # Store the names of the subpackages
+                built_packages=$(xmllint --xpath '(//Package/Name/text())' pspec_x86_64.xml)
+
+                if [[ -f "$slurpkg_local_db" ]]; then
+                    if [[ "$(jq 'has("built_pkgs")' $slurpkg_local_db)" == "true" ]]; then
+                        # Add entry if it does not exist
+                        jq --arg name "${packages_names[$i]}" --arg packages "$built_packages" \
+                            '.built_pkgs |=  (map(.name) | index($name)) as $ix |
+                        if $ix then .[$ix]["packages"] = ($packages | split("\n"))
+                        else . + [{name: $name, packages : $packages | split("\n")}] end' \
+                            "$slurpkg_local_db" > /tmp/slurpkg-db.json && mv /tmp/slurpkg-db.json "$slurpkg_local_db"
+                    fi
+                fi
+
+                # If this package is a kernel module, store this information so the
+                # module can be rebuilt if necessary
+                is_kernel_module="$(jq -r '.packages[] | select(.name | contains("'${packages_names[$i]}'")) | ."kernel_module"' "$slurpkg_db")"
+                if [[ "$is_kernel_module" == "true" ]]; then
+                    if [[ -f "$slurpkg_local_db" ]]; then
+                        if [[ "$(jq 'has("kernel_modules")' $slurpkg_local_db)" == "true" ]]; then
+                            # Add entry if it does not exist
+                            jq --arg name "${packages_names[$i]}" \
+                                '.kernel_modules |= (.+ [$name] | unique)' \
+                            "$slurpkg_local_db" > /tmp/slurpkg-db.json && mv /tmp/slurpkg-db.json "$slurpkg_local_db"
+                        fi
+                    fi
+                fi
+            fi
+        fi
+    done
+    echo "Triggering index..."
+    sudo eopkg index --skip-signing "$local_repo"
+    sudo eopkg update-repo
+    sudo rm -fv pspec*.xml
+    _popd
+    echo-ok "Finished building local packages"
+}

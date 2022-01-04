@@ -1,0 +1,20 @@
+name       : pandoc-crossref-bin
+version    : 0.3.11.0
+release    : 8
+source     :
+    - https://github.com/lierdakil/pandoc-crossref/releases/download/v0.3.11.0a/pandoc-crossref-Linux.tar.xz : 7286e28fd51e59be13139a008f54605aa15568f83686a6f64b3c60f6babc6cff
+license    : BSD-3-Clause
+component  : office
+summary    : Pandoc filter for cross-references
+description: |
+    Pandoc filter for cross-references
+networking : yes
+rundeps    :
+    - pandoc-bin
+install    : |
+    # To avoid having to download over a gigabyte of haskell makedepends (400-ish for ghc, plus 750 in libs), we
+    # just yoink the binary from static compiled binary distributed by pandoc:
+    mkdir -p "$installdir/usr/bin"
+    cp pandoc-crossref "$installdir/usr/bin/"
+    mkdir -p "$installdir/usr/share/man/man1/"
+    cp pandoc-crossref.1 "$installdir/usr/share/man/man1/"

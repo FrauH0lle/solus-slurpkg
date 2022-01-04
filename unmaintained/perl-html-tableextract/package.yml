@@ -1,0 +1,24 @@
+name       : perl-html-tableextract
+version    : 2.15
+release    : 1
+source     :
+    - https://www.cpan.org/authors/id/M/MS/MSISK/HTML-TableExtract-2.15.tar.gz : 86c59c9d58da3ca174da5e62f5a0fb02f4da02b1b1e01df9e5d14bb65e4c3ecf
+license    : Artistic-1.0-Perl
+component  : programming.perl
+summary    : HTML::TableExtract - Flexible HTML table extraction
+description: |
+    HTML::TableExtract - Flexible HTML table extraction
+builddeps  :
+    - perl
+    - perl-html-parser
+rundeps    :
+    - perl-html-parser
+    - perl-html-element-extended
+setup      : |
+    %perl_setup
+build      : |
+    %perl_build
+install    : |
+    %perl_install
+check      : |
+    %perl_build test

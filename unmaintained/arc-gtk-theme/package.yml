@@ -1,0 +1,24 @@
+name       : arc-gtk-theme
+version    : '20210412'
+release    : 27
+source     :
+    - https://github.com/jnsh/arc-theme/releases/download/20210412/arc-theme-20210412.tar.xz : 3d0fadc9ccbf3a49c257388d56d6e15fb4acb39ce7f3cdfbeffa8326ec6770b7
+license    : GPL-3.0-or-later
+summary    : Arc GTK Theme
+description: |
+    A flat theme with transparent elements
+component  : desktop.theme
+builddeps  :
+    - pkgconfig(gtk+-3.0)
+    - inkscape
+    - optipng
+    - sassc
+rundeps    :
+    - gtk2-engine-murrine
+setup      : |
+    %meson_configure -Dthemes=gnome-shell,gtk2,gtk3,metacity,xfwm \
+    -Dgnome_shell_version=3.32
+build      : |
+    %ninja_build
+install    : |
+    %ninja_install

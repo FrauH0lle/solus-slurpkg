@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+# Update packages and run system upgrade
+
+
+# Expected env variables:
+# HOME
+
+
+# Error handling
+trap '[ "$?" -ne 0 ] && printf "\nAn error occurred\n"' EXIT
+
+
+# Source library
+source "$(dirname $(realpath ${BASH_SOURCE[0]}))/libslurpkg"
+
+# Print usage to stdout.
+# Arguments:
+#   None
+# Outputs:
+#   Print usage with examples.
+slurpkg_update_help() {
+    cat <<EOF
+Update local packages, apply patches if possible, run system update and rebuild
+kernel modules if necessary.
+
+Usage:
+
+    slurpkg update [options]
+
+Options:
+    help:       show this message
+EOF
+}
+
+slurpkg_update() {
+    while [[ $# -gt 0 ]]; do
+        key="$1"
+
+        case $key in
+            help)
+                slurpkg_update_help
+                exit 0
+                ;;
+            *)  # Default case: No arguments
+                break
+                ;;
+        esac
+    done
+}

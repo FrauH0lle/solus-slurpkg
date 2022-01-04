@@ -1,0 +1,122 @@
+#!/usr/bin/env bash
+
+# Add packages to local repository
+
+
+# Expected env variables:
+# HOME
+
+
+# Error handling
+trap '[ "$?" -ne 0 ] && printf "\nAn error occurred\n"' EXIT
+
+
+# Source library
+source "$(dirname $(realpath ${BASH_SOURCE[0]}))/libslurpkg"
+
+
+# Variables
+source_dir="$(dirname $(realpath ${BASH_SOURCE[0]}))/packages"
+local_dir="$(dirname $(realpath ${BASH_SOURCE[0]}))/local"
+build_dir="$(dirname $(realpath ${BASH_SOURCE[0]}))/build"
+slurpkg_db="$(dirname $(realpath ${BASH_SOURCE[0]}))/slurpkg.json"
+
+
+# Print usage to stdout.
+# Arguments:
+#   None
+# Outputs:
+#   Print usage with examples.
+slurpkg_add_help() {
+    cat <<EOF
+Add package to local Solus package repository.
+
+Usage:
+
+    slurpkg add [options] <pkg1> <pkg2> ...
+
+Options:
+    --file      file which contains package names
+    help:       show this message
+EOF
+}
+
+# Add packages to repository
+# Arguments:
+#   $@ multiple packages
+#   --file A file containing newline seperated package names. Lines starting
+#     with '#' are skipped.
+# Outputs:
+#   None. Will create symlinks if successful.
+slurpkg_add() {
+    local packages=()
+    while [[ $# -gt 0 ]]; do
+        key="$1"
+
+        case $key in
+            help)
+                slurpkg_add_help
+                exit 0
+                ;;
+            --file)
+                # Read file and break the loop
+                shift # past argument
+                while read -r line; do
+                    # Skip lines starting with "#"
+                    [[ "$line" =~ ^#.*$ ]] && continue
+                    # Do not add empty lines
+                    if [[ ! -z "$line" ]]; then
+                        packages+=("$line")
+                    fi
+                done < "$1"
+                break
+                ;;
+            *)  # Default case: Store arguments in packages arrary
+                packages+=("$1")
+                shift
+                ;;
+        esac
+    done
+
+    # Check if package sources can be found. Local sources should take
+    # precendence.
+    source_fail=0
+    for pkg in "${packages[@]}"; do
+        if [[ ! -d "$local_dir/packages/$pkg" ]]; then
+            if [[ ! -d "$source_dir/$pkg" ]]; then
+                echo-fail "Package $(tput bold)$pkg$(tput sgr0) sources not found."
+                source_fail=1
+            fi
+        fi
+    done
+    if [[ "$source_fail" -ne 0 ]]; then
+        echo "Could not find all packages, aborting."
+        exit 1
+    fi
+
+    # Then link the requested packages.
+    for pkg in "${packages[@]}"; do
+        # Check if local dependencies are defined
+        # 'slurpkg.json' in '$local_dir' should take precedence
+        if [[ -f "$local_dir/slurpkg.json" ]]; then
+            declare -a deps="($(jq -r '.packages[] | select(.name | contains("'$pkg'")) | select(.dependencies != null) | .dependencies[] | @sh' "$local_dir/slurpkg.json"))"
+        fi
+        if [[ -z "$deps" ]]; then
+            declare -a deps="($(jq -r '.packages[] | select(.name | contains("'$pkg'")) | select(.dependencies != null) | .dependencies[] | @sh' "$slurpkg_db"))"
+        fi
+        if [[ ! -z "$deps" ]]; then
+            # Run in subshell to avoid confusion with variables
+            ( slurpkg_add "${deps[@]}" )
+        fi
+
+        if [[ -d "$local_dir/packages/$pkg" ]]; then
+            echo-info "Adding package $(tput bold)$pkg$(tput sgr0)."
+            ln -sfv "$local_dir/packages/$pkg" "$build_dir"
+        else
+            echo-info "Adding package $(tput bold)$pkg$(tput sgr0)."
+            ln -sfv "$source_dir/$pkg" "$build_dir"
+        fi
+    done
+
+    return 0
+}

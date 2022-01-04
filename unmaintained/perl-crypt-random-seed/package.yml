@@ -1,0 +1,20 @@
+name       : perl-crypt-random-seed
+version    : 0.03
+release    : 1
+source     :
+    - https://cpan.metacpan.org/authors/id/D/DA/DANAJ/Crypt-Random-Seed-0.03.tar.gz : 593da54b522c09cc26bbcc0e4e49c1c8e688a6fd33b0726af801d722a5c8d0f1
+license    : Artistic-1.0-Perl
+component  : programming.perl
+summary    : Crypt::Random::Seed - Simple method to get strong randomness
+description: |
+    Crypt::Random::Seed - Simple method to get strong randomness
+builddeps  :
+    - perl
+setup      : |
+    %perl_setup
+build      : |
+    %perl_build
+install    : |
+    %perl_install
+check      : |
+    %perl_build test

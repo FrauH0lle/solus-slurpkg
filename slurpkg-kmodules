@@ -1,0 +1,141 @@
+#!/usr/bin/env bash
+
+# Build and rebuild kernel modules for installed kernels
+
+
+# Expected env variables:
+# HOME
+
+
+# Error handling
+trap '[ "$?" -ne 0 ] && printf "\nAn error occurred\n"' EXIT
+
+
+# Source library
+source "$(dirname $(realpath ${BASH_SOURCE[0]}))/libslurpkg"
+
+
+# Variables
+slurpkg_local_db="$HOME/.local/share/slurpkg/slurpkg-db.json"
+slurpkg_db="$(dirname $(realpath ${BASH_SOURCE[0]}))/slurpkg.json"
+local_repo="/var/lib/solbuild/local"
+build_dir="$(dirname $(realpath ${BASH_SOURCE[0]}))/build"
+
+
+# Print usage to stdout.
+# Arguments:
+#   None
+# Outputs:
+#   Print usage with examples.
+slurpkg_kmodules_help() {
+    cat <<EOF
+Rebuild kernel modules when the kernel has been updated and reinstall them.
+
+Usage:
+
+    slurpkg kmodules [options]
+
+Options:
+    help:       show this message
+EOF
+}
+
+slurpkg_kmodules() {
+    while [[ $# -gt 0 ]]; do
+        key="$1"
+
+        case $key in
+            help)
+                slurpkg_kmodules_help
+                exit 0
+                ;;
+            *)  # Default case: No arguments
+                break
+                ;;
+        esac
+    done
+
+    # Find local kernel modules
+    declare -a kmodules="($(jq -r 'select(.kernel_modules != null) | .kernel_modules[] | @sh' "$slurpkg_local_db"))"
+
+    # Check found kernel modules
+    if [[ ! -z "$kmodules" ]]; then
+        local need_rebuild=0
+        local do_rebuild=0
+
+        for module in "${kmodules[@]}"; do
+            kernel_module_file="$(jq -r '.packages[] | select(.name | contains("'$module'")) | ."kernel_module_file"' "$slurpkg_db")"
+            readarray -d '' modules_found < <(find /lib/modules -name "$kernel_module_file")
+            readarray -d '' kernels_found < <(find /lib/modules \
+                -mindepth 1 -maxdepth 1 -type d \
+                -print0)
+
+            for i in "${!kernels_found[@]}"; do
+                kernels_found["$i"]="${kernels_found[$i]##*/}"
+            done
+            for k in "${kernels_found[@]}"; do
+                for m in "${modules_found[@]}"; do
+                    if [[ "$m" =~ "$k" ]]; then
+                        echo "$module installed for $k"
+                    else
+                        echo "$module not installed for $k"
+                        need_rebuild=1
+                    fi
+                done
+            done
+
+            if [[ "$need_rebuild" -ne 0 ]]; then
+                # build module
+                while true; do
+                    read -p "Do you want to rebuild $module (y/n)?" choice
+                    case "$choice" in
+                        y|Y ) do_rebuild=1; break ;;
+                        n|N ) do_rebuild=0; break ;;
+                        * ) echo "Please answer with y/Y or n/N.";;
+                    esac
+                done
+
+                if [[ "$do_rebuild" -ne 0 ]]; then
+                    _pushd "$local_repo"
+                    sudo eopkg index --skip-signing "$local_repo"
+                    sudo solbuild build "$build_dir/$module/package.yml" -p local-main-x86_64 || \
+                        { echo-fail "$(tput bold)Unable to build $module!$(tput sgr0)"; exit 1; }
+                    sudo eopkg index --skip-signing "$local_repo"
+                    sudo eopkg update-repo
+                    sudo rm -fv pspec*.xml
+                else
+                    echo "Skipping $module"
+                fi
+
+                # Check which packages are installed and reinstall
+                readarray -d '' installed_pkgs < <(eopkg list-installed | awk '{$1=$1;print}' | awk '{print $1}' | grep "$module" | tr '\n' '\0')
+                # Check if there are any dependencies and remove them from the packages
+                # which should be explicitly re-installed
+                # Unfortunately, using --automatic results in colored output, which needs to
+                # be stripped
+                readarray -d '' installed_dep_pkgs < <(eopkg list-installed --automatic | awk '{$1=$1;print}' | awk '{print $1}' | grep "$module" | sed -r 's/\x1b\[[0-9;]*m//g' | tr '\n' '\0')
+
+                for target in "${installed_dep_pkgs[@]}"; do
+                    for i in "${!installed_pkgs[@]}"; do
+                        if [[ "${installed_pkgs[i]}" = "$target" ]]; then
+                            unset 'installed_pkgs[i]'
+                        fi
+                    done
+                done
+
+                for i in "${!installed_pkgs[@]}"; do
+                    new_array+=( "${installed_pkgs[i]}" )
+                done
+                installed_pkgs=("${new_array[@]}")
+                unset new_array
+
+                sudo eopkg install --reinstall "${installed_pkgs[@]}"
+            else
+                echo "$module already installed for all found kernels"
+            fi
+        done
+
+    else
+        echo-info "No kernel modules found which need to be rebuild"
+    fi
+}

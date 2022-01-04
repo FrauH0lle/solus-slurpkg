@@ -1,0 +1,75 @@
+name       : kwinft
+version    : 5.20.0
+release    : 2
+source     :
+    - https://gitlab.com/kwinft/kwinft/-/archive/kwinft@5.20.0/kwinft-kwinft@5.20.0.tar.gz : f112c8fe3e3a88c2119f01fe5d089270354caca3953cdeb56e7e172ae2d74ea9
+license    : GPL-2.0-or-later # CHECK ME
+summary    : Wayland compositor and X11 window manager
+description: |
+    Wayland compositor and X11 window manager
+replaces   :
+    - kwin
+builddeps  :
+    - pkgconfig(disman)
+    - pkgconfig(epoxy)
+    - pkgconfig(fontconfig)
+    - pkgconfig(freetype2)
+    - pkgconfig(gbm)
+    - pkgconfig(libcap)
+    - pkgconfig(libinput)
+    - pkgconfig(libKActivities)
+    - pkgconfig(libpipewire-0.3)
+    - pkgconfig(Qt5Multimedia)
+    - pkgconfig(Qt5Quick)
+    - pkgconfig(Qt5Script)
+    - pkgconfig(Qt5Sensors)
+    - pkgconfig(Qt5UiTools)
+    - pkgconfig(Qt5VirtualKeyboard)
+    - pkgconfig(Qt5X11Extras)
+    - pkgconfig(sm)
+    - pkgconfig(wayland-cursor)
+    - pkgconfig(xcb-cursor)
+    - pkgconfig(xcb-event)
+    - pkgconfig(xcb-icccm)
+    - pkgconfig(xcb-keysyms)
+    - pkgconfig(xi)
+    - pkgconfig(xkbcommon)
+    - pkgconfig(xorg-server)
+    - breeze-devel
+    - extra-cmake-modules
+    - kcmutils-devel
+    - kcrash-devel
+    - kdeclarative-devel
+    - kdecoration-devel
+    - kdoctools-devel
+    - kglobalaccel-devel
+    - kiconthemes-devel
+    - kidletime-devel
+    - kinit-devel
+    - kio-devel
+    - kirigami2-devel
+    - knewstuff-devel
+    - knotifications-devel
+    - kscreenlocker-devel
+    - ktextwidgets-devel
+    - kwayland-devel
+    - kwayland-server-devel
+    - kwidgetsaddons-devel
+    - plasma-framework-devel
+    - wrapland-devel
+rundeps    :
+    - kdisplay
+    - kirigami2
+    - qt5-virtualkeyboard
+setup      : |
+    %cmake \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DKDE_INSTALL_LIBDIR="%libdir%" \
+    -DKDE_INSTALL_LIBEXECDIR="%libdir%/%PKGNAME%" \
+    -DKDE_INSTALL_USE_QT_SYS_PATHS=ON \
+    -DBUILD_TESTING=OFF \
+    -DBUILD_QCH=ON
+build      : |
+    %make
+install    : |
+    %make_install

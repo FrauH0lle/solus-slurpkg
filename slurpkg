@@ -1,0 +1,114 @@
+#!/usr/bin/env bash
+
+# Manage local Solus package repository
+
+
+# Expected env variables:
+# HOME
+
+
+# Error handling
+trap '[ "$?" -ne 0 ] && printf "\nAn error occurred\n"' EXIT
+
+
+# Source library
+source "$(dirname $(realpath ${BASH_SOURCE[0]}))/libslurpkg"
+
+
+# Check if requirements are installed
+check_dependencies
+
+
+# Print usage to stdout.
+# Arguments:
+#   None
+# Outputs:
+#   Print usage with examples.
+show_help() {
+    cat <<EOF
+Manage local Solus package repository.
+
+Usage:
+
+    slurpkg <command>
+
+You can add 'help' to a command to display its help.
+
+Commands:
+    add:        add a package to local repository
+    build:      build all packages and move into local repository
+    kmodules:   rebuild and reinstall kernel modules if necessary
+    patches:    apply local patches to Solus packages
+    update:     Update locacl repository, apply patches, run system upgrade and
+                rebuild kernel modules
+    help:       show this message
+EOF
+}
+
+
+# If nothing is provided, print help and exit
+if [ $# -eq 0 ]; then
+    printf "No arguments provided, showing help.\n\n"
+    show_help
+    exit 0
+fi
+
+# Parse arguments
+unknown=()
+while [[ $# -gt 0 ]]; do
+    key="$1"
+
+    case $key in
+        help)
+            # Show help message
+            show_help
+            exit 0
+            ;;
+        add)
+            # Add packages to repository
+            shift # past argument
+            source "$(dirname $(realpath ${BASH_SOURCE[0]}))/slurpkg-add"
+            slurpkg_add "$@"
+            ;;
+        build)
+            # Build packages in 'build' directory
+            shift # past argument
+            source "$(dirname $(realpath ${BASH_SOURCE[0]}))/slurpkg-build"
+            slurpkg_build "$@"
+            ;;
+        kmodules)
+            # Rebuild kernel modules
+            shift # past argument
+            source "$(dirname $(realpath ${BASH_SOURCE[0]}))/slurpkg-kmodules"
+            slurpkg_kmodules "$@"
+            ;;
+        patches)
+            # Patch Solus packages
+            shift # past argument
+            source "$(dirname $(realpath ${BASH_SOURCE[0]}))/slurpkg-patch"
+            slurpkg_patches "$@"
+            ;;
+        update)
+            # Run update
+            shift # past argument
+            source "$(dirname $(realpath ${BASH_SOURCE[0]}))/slurpkg-update"
+            slurpkg_update "$@"
+            source "$(dirname $(realpath ${BASH_SOURCE[0]}))/slurpkg-build"
+            slurpkg_build
+            source "$(dirname $(realpath ${BASH_SOURCE[0]}))/slurpkg-patch"
+            slurpkg_patches
+            sudo eopkg upgrade
+            source "$(dirname $(realpath ${BASH_SOURCE[0]}))/slurpkg-kmodules"
+            slurpkg_kmodules
+            ;;
+        *)  # unknown option
+            unknown+=("$1") # save it in an array for later
+            shift # past argument
+            ;;
+    esac
+done
+set -- "${unknown[@]}" # Restore unknown arguments
+
+
+set -o errexit
+set -o nounset

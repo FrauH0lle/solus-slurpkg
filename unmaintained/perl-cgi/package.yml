@@ -1,0 +1,25 @@
+name       : perl-cgi
+version    : 4.44
+release    : 1
+source     :
+    - https://cpan.metacpan.org/authors/id/L/LE/LEEJO/CGI-4.44.tar.gz : 12435fb7ebd3585c47b6d60ee4f5c7d6a7c114a2827d2b5acf3d62aa9fcf1208
+license    : Artistic-1.0-Perl
+component  : programming.perl
+summary    : Handle Common Gateway Interface requests and responses
+description: |
+    Handle Common Gateway Interface requests and responses
+builddeps  :
+    - perl
+    - perl-html-parser
+    - perl-test-deep
+    - perl-test-warn
+rundeps    :
+    - perl-html-parser
+setup      : |
+    %perl_setup
+build      : |
+    %perl_build
+install    : |
+    %perl_install
+check      : |
+    %perl_build test

@@ -1,0 +1,19 @@
+name       : libstemmer
+version    : 2.0.0
+release    : 1
+source     :
+    - git|https://github.com/snowballstem/snowball.git : 8c73aa900e168a96e046ec9ed6f13739c3dfacb0
+license    : GPL-2.0-or-later # CHECK ME
+summary    : Stemming library supporting several languages
+description: |
+    Stemming library supporting several languages
+libsplit   : no
+setup      : |
+    %patch -Np1 -i $pkgfiles/dynamiclib.patch
+build      : |
+    %make
+install    : |
+    install -Dm644 {.,"$installdir"/usr}/include/libstemmer.h
+    install -D {.,"$installdir"/usr/lib}/libstemmer.so.0.0.0
+    ln -s libstemmer.so.0.0.0 "$installdir/usr/lib/libstemmer.so.0"
+    ln -s libstemmer.so.0 "$installdir/usr/lib/libstemmer.so"

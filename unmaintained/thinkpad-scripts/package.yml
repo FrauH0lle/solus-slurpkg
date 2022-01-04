@@ -1,0 +1,35 @@
+name       : thinkpad-scripts
+version    : 4.12.0
+release    : 2
+source     :
+    - git|https://github.com/martin-ueding/thinkpad-scripts.git : bb53416486b44d5bd7aa292bfa2e6602b722da80
+license    : GPL-2.0-or-later # CHECK ME
+summary    : Scripts for ThinkPad X220 & X230 Tablet rotation, docking, etc.
+description: |
+    Scripts for ThinkPad X220 & X230 Tablet rotation, docking, etc.
+builddeps  :
+    - pkgconfig(python3)
+    - python-sphinx
+rundeps    :
+    - acpid2
+    - alsa-utils
+    - python-setuptools
+    - systemd
+    - xinput
+    - xrandr
+    - glib2
+    - pulseaudio
+    - usbutils
+    - network-manager
+    - xorg-driver-input-wacom
+    - xbacklight
+setup      : |
+    %patch -p1 < $pkgfiles/reverse-paths.patch
+build      : |
+    %make
+install    : |
+    %make_install
+    %python3_install
+    mkdir -p $installdir/%libdir%/udev
+    mv $installdir/lib/* $installdir/%libdir%
+    rmdir $installdir/lib

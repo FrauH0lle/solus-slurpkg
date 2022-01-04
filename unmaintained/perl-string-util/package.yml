@@ -1,0 +1,24 @@
+name       : perl-string-util
+version    : 1.26
+release    : 1
+source     :
+    - https://cpan.metacpan.org/authors/id/M/MI/MIKO/String-Util-1.26.tar.gz : f49a94f37c146c55211e3f87f3271b74ae4eaee416a519144e923dc0b433fa2d
+license    : Artistic-1.0-Perl
+component  : programming.perl
+summary    : String processing utilities
+description: |
+    String processing utilities
+builddeps  :
+    - perl
+    - perl-module-build
+    - perl-test-toolbox
+rundeps    :
+    - perl-number-misc
+setup      : |
+    %perl_setup
+build      : |
+    %perl_build
+install    : |
+    %perl_install
+check      : |
+    %perl_build test

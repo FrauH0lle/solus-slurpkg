@@ -1,0 +1,55 @@
+name       : acpi-call
+version    : 1.1.0
+release    : 11
+source     :
+    - git|https://github.com/nix-community/acpi_call.git : 3a28aabfa337d59df91cc04c85b250da7f7cadea
+license    : GPL-2.0-or-later # CHECK ME
+summary    : A linux kernel module that enables calls to ACPI methods through /proc/acpi/call
+description: |
+    A linux kernel module that enables calls to ACPI methods through /proc/acpi/call
+builddeps  :
+    - linux-lts
+    - linux-lts-headers
+    - linux-current
+    - linux-current-headers
+rundeps    :
+    - linux-lts
+    - acpi-call-common
+    - current :
+        - linux-current
+        - acpi-call-common
+permanent  :
+    - /lib/modules
+patterns   :
+    - common : /etc/modules-load.d
+    - current : /lib/modules/*.current
+setup      : |
+    # Fix build with Linux >= 3.17
+    sed -i 's|acpi/acpi.h|linux/acpi.h|' acpi_call.c
+
+    # Fix build with Linux >= 4.12
+    sed -i 's|asm/uaccess.h|linux/uaccess.h|' acpi_call.c
+
+    pushd ../..
+    cp -a build lts-build
+    cp -a build current-build
+build      : |
+    pushd ../../lts-build/acpi_call.git
+    KERNEL_VERSION="%kernel_version_lts%"
+    %make KVER=${KERNEL_VERSION}
+
+    pushd ../../current-build/acpi_call.git
+    KERNEL_VERSION="%kernel_version_current%"
+    %make KVER=${KERNEL_VERSION}
+install    : |
+    echo acpi_call | install -Dm644 /dev/stdin $installdir/etc/modules-load.d/acpi_call.conf
+
+    pushd ../../lts-build/acpi_call.git
+    KERNEL_VERSION="%kernel_version_lts%"
+    install -d -m 00755 $installdir/lib/modules/${KERNEL_VERSION}/extra
+    install -m 00644 *.ko $installdir/lib/modules/${KERNEL_VERSION}/extra
+
+    pushd ../../current-build/acpi_call.git
+    KERNEL_VERSION="%kernel_version_current%"
+    install -d -m 00755 $installdir/lib/modules/${KERNEL_VERSION}/extra
+    install -m 00644 *.ko $installdir/lib/modules/${KERNEL_VERSION}/extra

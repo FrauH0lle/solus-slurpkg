@@ -1,0 +1,20 @@
+name       : snapper-gui
+version    : 0.1
+release    : 3
+source     :
+    - git|https://github.com/ricardomv/snapper-gui.git : f0c67abe0e10cc9e2ebed400cf80ecdf763fb1d1
+license    : GPL-2.0-or-later # CHECK ME
+summary    : Gui for snapper, a tool of managing snapshots of Btrfs subvolumes and LVM volumes
+description: |
+    Gui for snapper, a tool of managing snapshots of Btrfs subvolumes and LVM volumes
+builddeps  :
+    - pkgconfig(python3)
+    - python-setuptools
+rundeps    :
+    - snapper
+    - python-gobject
+    - python-dbus
+    - libgtk-3
+    - libgtksourceview3
+install    : |
+    %python3_install

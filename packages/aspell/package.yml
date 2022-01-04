@@ -1,0 +1,24 @@
+name       : aspell
+version    : 0.60.8
+release    : 2
+source     :
+    - https://github.com/GNUAspell/aspell/archive/rel-0.60.8.tar.gz : 242f8ffac41db7b7dbb08e1b3e6ea3abb9e8b71ffebe2931c009baee692ff8e3
+license    : LGPL
+summary    : A spell checker designed to eventually replace Ispell
+description: |
+    A spell checker designed to eventually replace Ispell
+builddeps  :
+    - perl
+    - libtool-devel
+    - gettext-devel
+    - autoconf
+    - automake
+setup      : |
+    mv autogen autogen.sh
+    PERL_USE_UNSAFE_INC=1 %autogen
+    %configure
+build      : |
+    cd manual && make stamp-vti
+    %make
+install    : |
+    %make_install

@@ -1,0 +1,108 @@
+From: Troy-Hendry <24845585+Troy-Hendry@users.noreply.github.com>
+From 7425d946fc97552a2a899d34c03e3ae1202504a0 Mon Sep 17 00:00:00 2001
+Date: Thu, 16 Jan 2020 07:23:23 -0600
+Subject: [PATCH] Changes paths from /usr/bin to /usr/local/bin
+
++--
+ thinkpad-dock-acpi-hook-1-off       | 2 +-
+ thinkpad-dock-acpi-hook-1-on        | 2 +-
+ thinkpad-dock-acpi-hook-2           | 2 +-
+ thinkpad-mutemic-acpi-hook          | 2 +-
+ thinkpad-rotate-acpi-hook-1-rotated | 2 +-
+ thinkpad-rotate-acpi-hook-2-normal  | 2 +-
+ thinkpad-rotate-acpi-hook-2-rotated | 2 +-
+ tps/hooks.py                        | 4 ++--
+ 8 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/thinkpad-dock-acpi-hook-1-off b/thinkpad-dock-acpi-hook-1-off
+index b83325b..7e750d0 100644
++-- a/thinkpad-dock-acpi-hook-1-off
+-++ b/thinkpad-dock-acpi-hook-1-off
+@@ -2,4 +2,4 @@
+ # Licensed under The GNU Public License Version 2 (or later)
+ 
+ event=ibm/hotkey LEN0068:00 00000080 00004011
++action=/usr/bin/local/thinkpad-dock-hook off --via-hook acpi1_off
+-action=/usr/local/bin/thinkpad-dock-hook off --via-hook acpi1_off
+diff --git a/thinkpad-dock-acpi-hook-1-on b/thinkpad-dock-acpi-hook-1-on
+index 78841a0..fada817 100644
++-- a/thinkpad-dock-acpi-hook-1-on
+-++ b/thinkpad-dock-acpi-hook-1-on
+@@ -2,4 +2,4 @@
+ # Licensed under The GNU Public License Version 2 (or later)
+ 
+ event=ibm/hotkey LEN0068:00 00000080 00004010
++action=/usr/bin/local/thinkpad-dock-hook on --via-hook acpi1_on
+-action=/usr/local/bin/thinkpad-dock-hook on --via-hook acpi1_on
+diff --git a/thinkpad-dock-acpi-hook-2 b/thinkpad-dock-acpi-hook-2
+index 678e0cc..964df92 100644
++-- a/thinkpad-dock-acpi-hook-2
+-++ b/thinkpad-dock-acpi-hook-2
+@@ -2,4 +2,4 @@
+ # Licensed under The GNU Public License Version 2 (or later)
+ 
+ event=ibm/hotkey LEN0068:00 00000080 00006030
++action=/usr/bin/local/thinkpad-dock-hook --via-hook acpi2
+-action=/usr/local/bin/thinkpad-dock-hook --via-hook acpi2
+diff --git a/thinkpad-mutemic-acpi-hook b/thinkpad-mutemic-acpi-hook
+index b6d2293..758c107 100644
++-- a/thinkpad-mutemic-acpi-hook
+-++ b/thinkpad-mutemic-acpi-hook
+@@ -3,4 +3,4 @@
+ # Changes Copyright © 2013-2014 Martin Ueding <dev@martin-ueding.de>
+ 
+ event=ibm/hotkey HKEY 00000080 0000101b
++action=/usr/bin/local/thinkpad-mutemic
+-action=/usr/local/bin/thinkpad-mutemic
+diff --git a/thinkpad-rotate-acpi-hook-1-rotated b/thinkpad-rotate-acpi-hook-1-rotated
+index ffe1e72..7a5bb1f 100644
++-- a/thinkpad-rotate-acpi-hook-1-rotated
+-++ b/thinkpad-rotate-acpi-hook-1-rotated
+@@ -3,4 +3,4 @@
+ # Licensed under The GNU Public License Version 2 (or later)
+ 
+ event=ibm/hotkey HKEY 00000080 00005009
++action=/usr/bin/local/thinkpad-rotate-hook --via-hook acpi1_rotated
+-action=/usr/local/bin/thinkpad-rotate-hook --via-hook acpi1_rotated
+diff --git a/thinkpad-rotate-acpi-hook-2-normal b/thinkpad-rotate-acpi-hook-2-normal
+index db39a10..7778a8f 100644
++-- a/thinkpad-rotate-acpi-hook-2-normal
+-++ b/thinkpad-rotate-acpi-hook-2-normal
+@@ -3,4 +3,4 @@
+ # Licensed under The GNU Public License Version 2 (or later)
+ 
+ event=video/tabletmode TBLT 0000008A 00000000.*
++action=/usr/bin/local/thinkpad-rotate-hook normal --via-hook acpi2_normal
+-action=/usr/local/bin/thinkpad-rotate-hook normal --via-hook acpi2_normal
+diff --git a/thinkpad-rotate-acpi-hook-2-rotated b/thinkpad-rotate-acpi-hook-2-rotated
+index a976d19..59f7d85 100644
++-- a/thinkpad-rotate-acpi-hook-2-rotated
+-++ b/thinkpad-rotate-acpi-hook-2-rotated
+@@ -3,4 +3,4 @@
+ # Licensed under The GNU Public License Version 2 (or later)
+ 
+ event=video/tabletmode TBLT 0000008A 00000001.*
++action=/usr/bin/local/thinkpad-rotate-hook --via-hook acpi2_rotated
+-action=/usr/local/bin/thinkpad-rotate-hook --via-hook acpi2_rotated
+diff --git a/tps/hooks.py b/tps/hooks.py
+index d7da1a4..eabebd1 100644
++-- a/tps/hooks.py
+-++ b/tps/hooks.py
+@@ -126,7 +126,7 @@ def main_rotate_hook():
+     tps.check_call(
+         ['sudo', '-u', user, '-i',
+          'env', 'DISPLAY=:0.0',
++         '/usr/bin/thinkpad-rotate'] +
+-         '/usr/local/bin/thinkpad-rotate'] +
+         direction +
+         ['--via-hook', options.via_hook],
+         logger)
+@@ -163,7 +163,7 @@ def main_dock_hook():
+     tps.check_call(
+         ['sudo', '-u', user, '-i',
+          'env', 'DISPLAY=:0.0',
++         '/usr/bin/thinkpad-dock'] +
+-         '/usr/local/bin/thinkpad-dock'] +
+         action +
+         ['--via-hook', options.via_hook],
+         logger)
