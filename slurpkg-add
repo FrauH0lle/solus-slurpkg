@@ -19,6 +19,8 @@ source "$(dirname $(realpath ${BASH_SOURCE[0]}))/libslurpkg"
 source_dir="$(dirname $(realpath ${BASH_SOURCE[0]}))/packages"
 local_dir="$(dirname $(realpath ${BASH_SOURCE[0]}))/local"
 build_dir="$(dirname $(realpath ${BASH_SOURCE[0]}))/build"
+patches_dir="$(dirname $(realpath ${BASH_SOURCE[0]}))/patches"
+req_patches_dir="$(dirname $(realpath ${BASH_SOURCE[0]}))/req_patches"
 slurpkg_db="$(dirname $(realpath ${BASH_SOURCE[0]}))/slurpkg.json"
 
 
@@ -109,6 +111,7 @@ slurpkg_add() {
             ( slurpkg_add "${deps[@]}" )
         fi
 
+        # Create symlinks
         if [[ -d "$local_dir/packages/$pkg" ]]; then
             echo-info "Adding package $(tput bold)$pkg$(tput sgr0)."
             ln -sfv "$local_dir/packages/$pkg" "$build_dir"
@@ -116,6 +119,15 @@ slurpkg_add() {
             echo-info "Adding package $(tput bold)$pkg$(tput sgr0)."
             ln -sfv "$source_dir/$pkg" "$build_dir"
         fi
+
+        # Check for required patches and link them, if present
+        if [[ -d "$req_patches_dir/$pkg" ]]; then
+            echo-info "Found required patches for $(tput bold)$pkg$(tput sgr0). Linking."
+            for dir in "$(find $req_patches_dir/$pkg -mindepth 1 -type d)"; do
+                ln -sfv "$dir" "$patches_dir/${dir##*/}"
+            done
+        fi
+        
     done
 
     return 0

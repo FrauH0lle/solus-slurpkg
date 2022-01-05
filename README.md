@@ -74,6 +74,9 @@ directory to the `build` directory.
   package3
   ```
   
+- Will check the `req_patches` directory for the presence of patches and link
+  them into patches
+
 ### `slurpkg build`
 
 Build packages and moves them into the local repository.
@@ -169,6 +172,8 @@ itself is built.
   take precendenc over `packages`
 - `patches` Should be empty on the remote, contains the patches created by the
   user 
+- `req_patches` Required patches. Contains required patches for some packages.
+  Use carefully.
 - `scripts` Little helper scripts
 - `unmaintained` Package definitions which are not maintained and kept for
   reference or the future

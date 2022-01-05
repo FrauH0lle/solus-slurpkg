@@ -1,0 +1,22 @@
+diff --git a/package.yml b/package.yml
+index 2f81a12..d9ca808 100644
+--- a/package.yml
++++ b/package.yml
+@@ -1,8 +1,8 @@
+ name       : python-evdev
+-version    : 1.1.2
++version    : 1.4.0
+ release    : 6
+ source     :
+-    - https://github.com/gvalkov/python-evdev/archive/v1.1.2.tar.gz : 4403d4ee2d9682d17d292d5cfe0781d9ebfe119c7bb0f631fb59de3003bad49d
++    - https://github.com/gvalkov/python-evdev/archive/refs/tags/v1.4.0.tar.gz : 979638719b205acdead3ea3f7861d7b19427a8dc6147c660c24c58e79f0bb427
+ license    : BSD-3-Clause
+ component  : programming.python
+ summary    : Python bindings for the Linux input subsystem
+@@ -25,5 +25,5 @@ install    : |
+     %python_install
+     %python3_install
+ check      : |
+-    %python_test py.test -v -k "not test_uinput"
++    %python_test py.test -v -k "not test_uinput and not test_util"
+     %python3_test py.test3 -v -k "not test_uinput"

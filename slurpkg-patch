@@ -88,7 +88,7 @@ slurpkg_patches() {
     done
 
     # Collect packages to patch in an array
-    local patch_pkgs="$(find $patches_dir -mindepth 1 -type d)"
+    local patch_pkgs="$(find $patches_dir -mindepth 1 \( -type d -o -type l -xtype d \))"
     local pkgs_names=( $(echo "$patch_pkgs") )
     # Strip path in order to get repository names
     for i in "${!pkgs_names[@]}"; do
