@@ -3,11 +3,11 @@
 *.log
 tmp/
 
-src/common
+packages/common
 
-src/Makefile.common
-src/Makefile
-src/Makefile.iso
+packages/Makefile.common
+packages/Makefile
+packages/Makefile.iso
 
 # Built packages
 *.eopkg
