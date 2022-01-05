@@ -1,16 +1,46 @@
 name       : direnv2
-version    : 2.28.0
-release    : 3
+version    : 2.30.2
+release    : 4
 source     :
-    - https://github.com/direnv/direnv/archive/v2.28.0.tar.gz : fa539c63034b6161d8238299bb516dcec79e8905cd43ff2b9559ad6bf047cc93
+    - https://github.com/direnv/direnv/archive/refs/tags/v2.30.2.tar.gz : a2ee14ebdbd9274ba8bf0896eeb94e98947a056611058dedd4dbb43167e076f3
 license    : MIT
 summary    : A shell extension that manages your environment
 description: |
-    A shell extension that manages your environment
+    direnv is an environment switcher for the shell. It knows how to hook into
+    bash, zsh, tcsh and fish shell to load or unload environment variables
+    depending on the current directory. This allows project-specific environment
+    variables without cluttering the "~/.profile" file.
 networking : yes
 builddeps  :
     - golang
+    - bash
+    - zsh
+    - fish
+    - tcsh
+environment : |
+    export CGO_CPPFLAGS="${CPPFLAGS}"
+    export CGO_CFLAGS="${CFLAGS}"
+    export CGO_CXXFLAGS="${CXXFLAGS}"
+    export GO_LDFLAGS="${LDFLAGS}"
 build      : |
     %make
 install    : |
-    %make_install
+    # binary
+    install -vDm755 -t "$installdir/usr/bin" direnv
+
+    # documentation
+    install -vDm644 -t "$installdir/usr/share/man/man1" man/*.1
+    install -vDm644 -t "$installdir/usr/share/doc/direnv" README.md
+    install -vDm644 -t "$installdir/usr/share/doc/direnv/docs" docs/*
+check      : |
+    # run go tests
+    go test -v ./...
+
+    # run shell-specific tests
+    bash ./test/direnv-test.bash
+    fish ./test/direnv-test.fish
+    tcsh -e ./test/direnv-test.tcsh
+    zsh ./test/direnv-test.zsh
+
+    # run stdlib tests
+    ./test/stdlib.bash
