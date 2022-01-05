@@ -1,9 +1,9 @@
 name       : jdownloader2
 version    : 1
-release    : 3
+release    : 4
 source     :
-    - https://gitlab.com/DonHugo/solus-packages/-/raw/master/dummySource.txt : 411f5fe8b6f59365fc37bb18997b7e454ec4332bc49269a4e89b9289fc8c7d84
-license    : GPL-2.0-or-later # CHECK ME
+    - https://raw.githubusercontent.com/FrauH0lle/solus-slurpkg/master/dummy_source.txt : 411f5fe8b6f59365fc37bb18997b7e454ec4332bc49269a4e89b9289fc8c7d84
+license    : GPL-2.0-or-later
 summary    : Download manager for one-click hosting sites.
 description: |
     Download manager, written in Java, for one-click hosting sites like
