@@ -214,7 +214,7 @@ slurpkg_patches() {
 
             # Add info to DB
             if [[ -f "$slurpkg_local_db" ]]; then
-                if [[ "$(jq 'has("patched_pkgs")' $slurslurpkg_db)" == "true" ]]; then
+                if [[ "$(jq 'has("patched_pkgs")' $slurpkg_local_db)" == "true" ]]; then
                     # Add entry if it does not exist
                     jq --arg name "$name" --arg version "$version" --arg release "$release" --arg commit "$target_commit" \
                         '.patched_pkgs |=  (map(.name) | index($name)) as $ix |
@@ -222,7 +222,7 @@ slurpkg_patches() {
                 .[$ix]["release"] = $release |
                 .[$ix]["commit"] = $commit
                 else . + [{name: $name, version : $version, release : $release, commit : $commit}] end' \
-                    "$slurslurpkg_db" > /tmp/slurpkg-db.json && mv /tmp/slurpkg-db.json "$slurslurpkg_db"
+                    "$slurpkg_local_db" > /tmp/slurpkg-db.json && mv /tmp/slurpkg-db.json "$slurpkg_local_db"
                 fi
             fi
             _popd
