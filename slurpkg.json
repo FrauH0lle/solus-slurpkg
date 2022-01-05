@@ -35,6 +35,12 @@
         "font-quintessential-ttf",
         "font-signika-ttf"
       ]
+    },
+    {
+      "name": "input-remapper",
+      "dependencies": [
+        "pydbus"
+      ]
     }
   ]
 }

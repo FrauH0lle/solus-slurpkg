@@ -1,0 +1,30 @@
+name       : input-remapper
+version    : 9999
+release    : 1
+source     :
+    - https://raw.githubusercontent.com/FrauH0lle/solus-slurpkg/master/dummy_source.txt : 411f5fe8b6f59365fc37bb18997b7e454ec4332bc49269a4e89b9289fc8c7d84
+license    : GPL-3.0-or-later
+summary    : An easy to use tool to change the mapping of your input device buttons.
+description: |
+    An easy to use tool to change the mapping of your input device buttons.
+    Supports mice, keyboards, gamepads, X11, Wayland, combined buttons and
+    programmable macros. Allows mapping non-keyboard events (click, joystick,
+    wheel) to keys of keyboard devices.
+builddeps  :
+    - git
+    - pkgconfig(python3)
+    - python-setuptools
+rundeps    :
+    - python-gobject
+    - pydbus
+    - python-evdev
+    - python-setuptools
+    - xmodmap
+extract    : no
+networking : yes
+setup      : |
+    git clone --branch key-mapper-devices https://github.com/sezanzeb/input-remapper.git
+build      : |
+    %python3_setup
+install    : |
+    %python3_install
