@@ -37,6 +37,12 @@
       ]
     },
     {
+      "name": "pandoc-crossref-bin",
+      "dependencies": [
+        "pandoc-bin"
+      ]
+    },
+    {
       "name": "input-remapper",
       "dependencies": [
         "pydbus"
