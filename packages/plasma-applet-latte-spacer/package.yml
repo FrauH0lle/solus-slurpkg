@@ -1,12 +1,13 @@
 name       : plasma-applet-latte-spacer
 version    : 0.3.0
-release    : 2
+release    : 3
 source     :
     - git|https://github.com/psifidotos/applet-latte-spacer.git : 8a0e5b43f9c795411f0e63879a1c932164dae15a
-license    : GPL-2.0-or-later # CHECK ME
+license    : GPL-2.0-or-later
 summary    : Plasma applet that acts as a spacer between applets
 description: |
-    Plasma applet that acts as a spacer between applets
+    This is a Plasma 5 applet that acts as a spacer between applets. This
+    plasmoid is coming from Latte land but it can also support Plasma panels.
 install    : |
     _pkgdir="$installdir/usr/share/plasma/plasmoids/org.kde.latte.spacer"
 
