@@ -1,0 +1,17 @@
+name       : broadcom-bt-firmware
+version    : 12.0.1.1105_p3
+release    : 1
+source     :
+    - https://github.com/winterheart/broadcom-bt-firmware/archive/refs/tags/v12.0.1.1105_p3.tar.gz : 4010f11a5420d8f41d4223711ecbc1de20c1b09fe96a206e0df678c3fdad225d
+license    : CUSTOM
+summary    : Broadcom bluetooth firmware
+description: |
+    This package intentended to provide firmware of Broadcom WIDCOMM® Bluetooth
+    devices (including BCM20702, BCM20703, BCM43142 chipsets and other) for
+    Linux kernel.
+setup      : |
+    %cmake_ninja
+build      : |
+    %ninja_build
+install    : |
+    %ninja_install
