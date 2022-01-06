@@ -2,11 +2,15 @@ name       : plasma-applet-virtual-desktop-bar
 version    : 1.4
 release    : 5
 source     :
-    - git|https://github.com/wsdfhjxc/virtual-desktop-bar.git : b757a81476eb989a9cb35e7d0d5d09e9345d7484
-license    : GPL-2.0-or-later # CHECK ME
+    - git|https://github.com/wsdfhjxc/virtual-desktop-bar.git : 1.4
+license    : GPL-3.0-or-later
 summary    : KDE Plasma panel applet for managing virtual desktops
 description: |
-    KDE Plasma panel applet for managing virtual desktops
+    This is an applet for KDE Plasma panel (or Latte Dock) that lets you switch
+    between virtual desktops and also invoke some actions to dynamically manage
+    them in a convenient way. In order to do it, you can use the mouse, the
+    context menu or user-defined keyboard shortcuts. There are also some extra
+    features related to virtual desktops.
 builddeps  :
     - pkgconfig(Qt5Qml)
     - pkgconfig(Qt5Core)
