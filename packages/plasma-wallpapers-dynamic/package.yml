@@ -1,12 +1,13 @@
 name       : plasma-wallpapers-dynamic
 version    : 3.3.9
-release    : 5
+release    : 6
 source     :
-    - https://github.com/zzag/plasma5-wallpapers-dynamic/archive/refs/tags/3.3.9.tar.gz : 15bdf516942b1999e722d59789777060c7de2cd058bed4c48628df9e1892f8fd
-license    : GPL-2.0-or-later # CHECK ME
+    - git|https://github.com/zzag/plasma5-wallpapers-dynamic.git : eb87fa359cc4134cb761a458b4d881f262b9a9cb
+license    : GPL-2.0-or-later
 summary    : Dynamic wallpaper plugin for KDE Plasma
 description: |
-    Dynamic wallpaper plugin for KDE Plasma
+    A wallpaper plugin for KDE Plasma that continuously updates the desktop
+    background based on the current time in your location.
 builddeps  :
     - pkgconfig(Qt5Qml)
     - pkgconfig(Qt5Core)
@@ -23,8 +24,8 @@ builddeps  :
 rundeps    :
     - geoclue
 setup      : |
-    %cmake
+    %cmake_ninja
 build      : |
-    %make
+    %ninja_build
 install    : |
-    %make_install
+    %ninja_install
