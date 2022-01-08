@@ -6,6 +6,11 @@
       "kernel_module_file": "hid-xpadneo.ko"
     },
     {
+      "name": "acpi-call",
+      "kernel_module": "true",
+      "kernel_module_file": "acpi_call.ko"
+    },
+    {
       "name": "aspell-de",
       "dependencies": [
         "aspell"

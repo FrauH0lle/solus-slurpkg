@@ -1,12 +1,13 @@
 name       : acpi-call
-version    : 1.1.0
-release    : 11
+version    : 1.2.2
+release    : 12
 source     :
-    - git|https://github.com/nix-community/acpi_call.git : 3a28aabfa337d59df91cc04c85b250da7f7cadea
+    - git|https://github.com/nix-community/acpi_call.git : 195af8a2bb52352f8fdb41a91d087c041bb91520
 license    : GPL-2.0-or-later # CHECK ME
 summary    : A linux kernel module that enables calls to ACPI methods through /proc/acpi/call
 description: |
-    A linux kernel module that enables calls to ACPI methods through /proc/acpi/call
+    A simple kernel module that allows one to call ACPI methods by writing the
+    method name followed by its arguments to /proc/acpi/call.
 builddeps  :
     - linux-lts
     - linux-lts-headers
@@ -24,12 +25,6 @@ patterns   :
     - common : /etc/modules-load.d
     - current : /lib/modules/*.current
 setup      : |
-    # Fix build with Linux >= 3.17
-    sed -i 's|acpi/acpi.h|linux/acpi.h|' acpi_call.c
-
-    # Fix build with Linux >= 4.12
-    sed -i 's|asm/uaccess.h|linux/uaccess.h|' acpi_call.c
-
     pushd ../..
     cp -a build lts-build
     cp -a build current-build
