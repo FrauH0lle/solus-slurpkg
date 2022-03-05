@@ -103,31 +103,31 @@ slurpkg_kmodules() {
                     sudo eopkg index --skip-signing "$local_repo"
                     sudo eopkg update-repo
                     sudo rm -fv pspec*.xml
+
+                    # Check which packages are installed and reinstall
+                    readarray -d '' installed_pkgs < <(eopkg list-installed | awk '{$1=$1;print}' | awk '{print $1}' | grep "$module" | tr '\n' '\0')
+                    # Check if there are any dependencies and remove them from the packages
+                    # which should be explicitly re-installed
+                    readarray -d '' installed_dep_pkgs < <(eopkg list-installed --automatic --no-color | awk '{$1=$1;print}' | awk '{print $1}' | grep "$module" | tr '\n' '\0')
+
+                    for target in "${installed_dep_pkgs[@]}"; do
+                        for i in "${!installed_pkgs[@]}"; do
+                            if [[ "${installed_pkgs[i]}" = "$target" ]]; then
+                                unset 'installed_pkgs[i]'
+                            fi
+                        done
+                    done
+
+                    for i in "${!installed_pkgs[@]}"; do
+                        new_array+=( "${installed_pkgs[i]}" )
+                    done
+                    installed_pkgs=("${new_array[@]}")
+                    unset new_array
+
+                    sudo eopkg install --reinstall "${installed_pkgs[@]}"
                 else
                     echo "Skipping $module"
                 fi
-
-                # Check which packages are installed and reinstall
-                readarray -d '' installed_pkgs < <(eopkg list-installed | awk '{$1=$1;print}' | awk '{print $1}' | grep "$module" | tr '\n' '\0')
-                # Check if there are any dependencies and remove them from the packages
-                # which should be explicitly re-installed
-                readarray -d '' installed_dep_pkgs < <(eopkg list-installed --automatic --no-color | awk '{$1=$1;print}' | awk '{print $1}' | grep "$module" | tr '\n' '\0')
-
-                for target in "${installed_dep_pkgs[@]}"; do
-                    for i in "${!installed_pkgs[@]}"; do
-                        if [[ "${installed_pkgs[i]}" = "$target" ]]; then
-                            unset 'installed_pkgs[i]'
-                        fi
-                    done
-                done
-
-                for i in "${!installed_pkgs[@]}"; do
-                    new_array+=( "${installed_pkgs[i]}" )
-                done
-                installed_pkgs=("${new_array[@]}")
-                unset new_array
-
-                sudo eopkg install --reinstall "${installed_pkgs[@]}"
             else
                 echo "$module already installed for all found kernels"
             fi
