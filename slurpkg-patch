@@ -57,6 +57,7 @@ Usage:
 
 Options:
     help:       show this message
+    --noask:    Don't ask questions.
 EOF
 }
 
@@ -73,6 +74,9 @@ db_get_info() {
 }
 
 slurpkg_patches() {
+    # Be interactive by default
+    local ask=1
+
     while [[ $# -gt 0 ]]; do
         key="$1"
 
@@ -80,6 +84,10 @@ slurpkg_patches() {
             help)
                 slurpkg_patches_help
                 exit 0
+                ;;
+            --noask)
+                ask=0
+                break
                 ;;
             *)  # Default case: No arguments
                 break
@@ -106,7 +114,6 @@ slurpkg_patches() {
         local db_release="$(db_get_info $name release)"
         local db_version="$(db_get_info $name version)"
         local db_commit="$(db_get_info $name commit)"
-
         # Git repo URL
         local pkg_url="https://dev.getsol.us/source/$name.git"
 
@@ -183,19 +190,23 @@ slurpkg_patches() {
         fi
 
         # Check if target revision was already patched
-        local do_patch=1
+        local do_patch=0
         if [[ "$target_commit" == "$db_commit" ]]; then
             echo-info "$name is already patched."
             # Ask if patch should be applied again and rebuild package or continue
             # with next package
-            while true; do
-                read -p "Apply patch again (y/n)?" choice
-                case "$choice" in
-                    y|Y ) do_patch=1; break ;;
-                    n|N ) do_patch=0; break ;;
-                    * ) echo "Please answer with y/Y or n/N.";;
-                esac
-            done
+            if [[ "$ask" -ne 0 ]]; then
+                while true; do
+                    read -p "Apply patch again (y/n)?" choice
+                    case "$choice" in
+                        y|Y ) do_patch=1; break ;;
+                        n|N ) do_patch=0; break ;;
+                        * ) echo "Please answer with y/Y or n/N.";;
+                    esac
+                done
+            fi
+        else
+            do_patch=1
         fi
 
         if [[ "$do_patch" -ne 0 ]]; then

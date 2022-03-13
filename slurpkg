@@ -40,7 +40,7 @@ Commands:
     kmodules:   rebuild and reinstall kernel modules if necessary
     patches:    apply local patches to Solus packages
     update:     Update locacl repository, apply patches, run system upgrade and
-                rebuild kernel modules
+                rebuild kernel modules. Only minimal interaction.
     help:       show this message
 EOF
 }
@@ -96,7 +96,7 @@ while [[ $# -gt 0 ]]; do
             source "$(dirname $(realpath ${BASH_SOURCE[0]}))/slurpkg-build"
             slurpkg_build
             source "$(dirname $(realpath ${BASH_SOURCE[0]}))/slurpkg-patch"
-            slurpkg_patches
+            slurpkg_patches --noask
             sudo eopkg upgrade
             source "$(dirname $(realpath ${BASH_SOURCE[0]}))/slurpkg-kmodules"
             slurpkg_kmodules
