@@ -92,6 +92,7 @@ while [[ $# -gt 0 ]]; do
             # Run update
             shift # past argument
             source "$(dirname $(realpath ${BASH_SOURCE[0]}))/slurpkg-update"
+            sudo solbuild update
             slurpkg_update "$@"
             source "$(dirname $(realpath ${BASH_SOURCE[0]}))/slurpkg-build"
             slurpkg_build
