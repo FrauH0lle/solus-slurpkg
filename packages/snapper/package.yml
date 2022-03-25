@@ -1,0 +1,42 @@
+name       : snapper
+version    : 0.9.1
+release    : 3
+source     :
+    - https://github.com/openSUSE/snapper/archive/refs/tags/v0.9.1.tar.gz : 8150d8de439836f39d6dd530a0837ba02effbc28b9d2ce8791fda66087565352
+license    : GPL-2.0-or-later
+summary    : Manage filesystem snapshots and allow undo of system modifications
+description: |
+    Snapper is a tool for Linux file system snapshot management. Apart from the
+    obvious creation and deletion of snapshots it can compare snapshots and
+    revert differences between them. In simple terms, this allows root and
+    non-root users to view older versions of files and revert changes.
+builddeps  :
+    - pkgconfig(libacl)
+    - pkgconfig(dbus-1)
+    - pkgconfig(libxml-2.0)
+    - pkgconfig(json-c)
+    - pkgconfig(lvm2app)
+    - pkgconfig(libxslt)
+    - pkgconfig(libbtrfsutil)
+    - libboost-devel
+    - pam-devel
+    - pkgconfig(systemd)
+    - pkgconfig(ext2fs)
+    - pkgconfig(gtk-doc)
+rundeps    :
+    - btrfs-progs
+    - libboost
+setup      : |
+    %reconfigure --disable-zypp --disable-silent-rules
+    # On Solus, libtinfo is part of libncurses
+    sed -i 's/libsnapper.la -ltinfo/libsnapper.la -lncurses/' "$workdir"/client/utils/Makefile.am
+build      : |
+    %make
+install    : |
+    %make_install
+    install -Dm644 data/sysconfig.snapper "$installdir"/etc/sysconfig/snapper
+    # Remove testsuite
+    rm -rf "$installdir/usr/lib64/snapper/testsuite"
+    # Remove cron job
+    rm -rf "$installdir/etc/cron.daily"
+    rm -rf "$installdir/etc/cron.hourly"
